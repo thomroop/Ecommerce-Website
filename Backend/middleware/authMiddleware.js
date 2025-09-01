@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-// ✅ Protect routes (only logged in users can access)
+//  Protect routes (only logged in users can access)
 export const protect = async (req, res, next) => {
   try {
     let token;
@@ -28,7 +28,7 @@ export const protect = async (req, res, next) => {
   }
 };
 
-// ✅ Admin middleware
+//  Admin middleware
 export const admin = (req, res, next) => {
   if (req.user && req.user.role === "Admin") {
     next();

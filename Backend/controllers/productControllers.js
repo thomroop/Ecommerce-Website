@@ -1,7 +1,7 @@
 import Product from "../models/Product.js";
 import RESPONSE_MESSAGES from "../constants/messages.js";
 
-// 👉 Add new product
+//  Add new product
 export const addProduct = async (req, res) => {
   try {
     const product = await Product.create(req.body);
@@ -19,7 +19,7 @@ export const addProduct = async (req, res) => {
   }
 };
 
-// 👉 Get all products
+ // Get all products
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find().populate("category").populate("seller");
@@ -37,7 +37,7 @@ export const getProducts = async (req, res) => {
   }
 };
 
-// 👉 Get single product
+//  Get single product
 export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id)
@@ -63,7 +63,7 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// 👉 Update product
+//  Update product
 export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -87,7 +87,7 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-// 👉 Delete product
+//  Delete product
 export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);

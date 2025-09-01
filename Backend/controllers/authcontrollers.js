@@ -5,7 +5,7 @@ import responseMessages from "../constants/messages.js";
 import { successResponse, errorResponse } from "../constants/response.js";
 import STATUS_CODES from "../constants/httpStatus.js";
 
-// 👉 Register User
+//  Register User
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
@@ -52,7 +52,7 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// 👉 Login User
+//  Login User
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;

@@ -5,7 +5,7 @@ import httpMessages from "../constants/httpStatus.js";
 import messages from "../constants/messages.js";
 import { successResponse, errorResponse } from "../constants/response.js";
 
-// 👉 Register new user
+//  Register new user
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password, role, phone, address } = req.body;
@@ -40,7 +40,7 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// 👉 Login user
+//  Login user
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -70,7 +70,7 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// 👉 Get logged in user profile
+//  Get logged in user profile
 export const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -82,7 +82,7 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-// 👉 Update user profile (self)
+//  Update user profile (self)
 export const updateUserProfile = async (req, res) => {
   try {
     const { name, phone, address, password } = req.body;
@@ -107,7 +107,7 @@ export const updateUserProfile = async (req, res) => {
   }
 };
 
-// 👉 Admin: Get all users
+//  Admin: Get all users
 export const getAllUsers = async (req, res) => {
   try {
     // Check if user is logged in
@@ -130,7 +130,7 @@ export const getAllUsers = async (req, res) => {
 };
 
 
-// 👉 Admin: Delete user
+//  Admin: Delete user
 export const deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -143,7 +143,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// 👉 Admin: Update user role
+//  Admin: Update user role
 export const updateUserRole = async (req, res) => {
   try {
     const { role } = req.body;
