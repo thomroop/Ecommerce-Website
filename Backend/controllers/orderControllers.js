@@ -1,116 +1,121 @@
-// controllers/orderController.js
-import Order from "../models/order.js";
+import Order from "../models/Order.js";
 import httpStatus from "../constants/httpStatus.js";
+import { successResponse, errorResponse } from "../constants/response.js";
 
-
-// @desc Create new order
-// @route POST /api/orders
-// @access Private
+// @desc    Create a new order
+// @route   POST /api/orders
+// @access  Private
 export const createOrder = async (req, res) => {
   try {
-    const { quantity, payment, deliveryPerson } = req.body;
+    const { orderItems, status } = req.body;
+
+    if (!orderItems || orderItems.length === 0) {
+      return errorResponse(
+        res,
+        httpStatus.BAD_REQUEST.code,
+        "Order items are required"
+      );
+    }
+
+    const totalPrice = orderItems.reduce(
+      (acc, item) => acc + item.quantity * item.price,
+      0
+    );
 
     const order = new Order({
-      customer: req.user._id, // from logged-in user
-      quantity,
-      payment,
-      deliveryPerson,
+      customer: req.user._id,
+      orderItems,
+      totalPrice,
+      status: status || "Pending",
     });
 
     const createdOrder = await order.save();
-
-    res.status(httpStatus.CREATED).json({
-      code: httpStatus.CREATED,
-      message: httpMessages.CREATED.message,
-      data: createdOrder,
-    });
+    return successResponse(
+      res,
+      createdOrder,
+      "Order created successfully",
+      httpStatus.CREATED.code
+    );
   } catch (error) {
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      code: httpStatus.INTERNAL_SERVER_ERROR,
-      message: error.message,
-    });
+    return errorResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR.code,
+      error.message
+    );
   }
 };
 
-// @desc Get all orders (Admin)
-// @route GET /api/orders
-// @access Private/Admin
+// @desc    Get all orders
+// @route   GET /api/orders
+// @access  Private/Admin
 export const getOrders = async (req, res) => {
   try {
     const orders = await Order.find()
       .populate("customer", "name email")
-      .populate("deliveryPerson", "name email")
-      .populate("payment");
-
-    res.status(httpStatus.OK).json({
-      code: httpStatus.OK,
-      message: httpMessages.OK.message,
-      data: orders,
-    });
+      .populate("orderItems.product", "name price");
+    return successResponse(
+      res,
+      orders,
+      "Orders fetched successfully",
+      httpStatus.OK.code
+    );
   } catch (error) {
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      code: httpStatus.INTERNAL_SERVER_ERROR,
-      message: error.message,
-    });
+    return errorResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR.code,
+      error.message
+    );
   }
 };
 
-// @desc Update order status
-// @route PUT /api/orders/:id
-// @access Private/Admin
+// @desc    Update order status
+// @route   PUT /api/orders/:id
+// @access  Private/Admin
 export const updateOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(httpStatus.NOT_FOUND).json({
-        code: httpStatus.NOT_FOUND,
-        message: httpMessages.NOT_FOUND.message,
-      });
-    }
+    if (!order)
+      return errorResponse(res, httpStatus.NOT_FOUND.code, "Order not found");
 
     order.status = req.body.status || order.status;
-    if (req.body.deliveryPerson) order.deliveryPerson = req.body.deliveryPerson;
+    await order.save();
 
-    const updatedOrder = await order.save();
-
-    res.status(httpStatus.OK).json({
-      code: httpStatus.OK,
-      message: "Order updated successfully",
-      data: updatedOrder,
-    });
+    return successResponse(
+      res,
+      order,
+      "Order updated successfully",
+      httpStatus.OK.code
+    );
   } catch (error) {
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      code: httpStatus.INTERNAL_SERVER_ERROR,
-      message: error.message,
-    });
+    return errorResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR.code,
+      error.message
+    );
   }
 };
 
-// @desc Delete order
-// @route DELETE /api/orders/:id
-// @access Private/Admin
+// @desc    Delete order
+// @route   DELETE /api/orders/:id
+// @access  Private/Admin
 export const deleteOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(httpStatus.NOT_FOUND).json({
-        code: httpStatus.NOT_FOUND,
-        message: httpMessages.NOT_FOUND.message,
-      });
-    }
+    if (!order)
+      return errorResponse(res, httpStatus.NOT_FOUND.code, "Order not found");
 
     await order.deleteOne();
-
-    res.status(httpStatus.OK).json({
-      code: httpStatus.OK,
-      message: "Order deleted successfully",
-    });
+    return successResponse(
+      res,
+      null,
+      "Order deleted successfully",
+      httpStatus.OK.code
+    );
   } catch (error) {
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      code: httpStatus.INTERNAL_SERVER_ERROR,
-      message: error.message,
-    });
+    return errorResponse(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR.code,
+      error.message
+    );
   }
 };

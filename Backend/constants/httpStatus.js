@@ -1,4 +1,4 @@
-// constants/httpMessages.js
+// constants/httpStatus.js
 const httpStatus = {
   OK: {
     code: 200,

@@ -79,18 +79,27 @@ const seedDatabase = async () => {
     console.log("Products created");
 
     // Create Cart for normal user
-    await Cart.create({ user: normalUser._id, items: [] });
-    console.log("Cart created");
-
-    // Create Order for normal user
-    await Order.create({
-      customer: normalUser._id,
+    await Cart.create({ 
+      user: normalUser._id, 
       items: [
         { product: products[0]._id, quantity: 1 },
         { product: products[1]._id, quantity: 2 },
-      ],
-      totalPrice: 540, // calculate totalPrice properly
-      status: "Pending", // match enum in Order schema
+      ]
+    });
+    console.log("Cart created");
+
+    // Create Order for normal user
+    const orderItems = [
+      { product: products[0]._id, quantity: 1, price: products[0].price },
+      { product: products[1]._id, quantity: 2, price: products[1].price },
+    ];
+    const totalPrice = orderItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
+
+    await Order.create({
+      customer: normalUser._id,
+      orderItems,
+      totalPrice,
+      status: "Pending",
     });
     console.log("Order created");
 
@@ -103,3 +112,4 @@ const seedDatabase = async () => {
 };
 
 seedDatabase();
+

@@ -1,40 +1,38 @@
 import mongoose from "mongoose";
 
-const paymentSchema = new mongoose.Schema({
-
+const paymentSchema = new mongoose.Schema(
+  {
     userId: {
-        type : "",
-        ref : "user",
-        required : true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: false, // ✅ some payments may occur before user login
     },
-
     orderId: {
-        type : "",
-        ref : "order",
-        required : true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order",
+      required: false, // ✅ order created after payment confirmation
     },
-    amount : {
-        type: number,
-        required : true
+    paymentId: {
+      type: String, // ✅ Stripe's paymentIntent.id
+      required: true,
     },
-
+    amount: {
+      type: Number,
+      required: true,
+    },
     method: {
-        type: String,
-        enum :["credit card", "debit card", "UPI", "Cash on Delivery"],
-        required: true,
+      type: String,
+      enum: ["credit card", "debit card", "UPI", "Cash on Delivery", "card"],
+      default: "card", // ✅ for Stripe payments
     },
-    status: 
-    {
-    type: String,
-    enum: ["Pending", "Completed", "Failed"],
-    default: "Pending",
+    status: {
+      type: String,
+      enum: ["Pending", "Completed", "Failed"],
+      default: "Pending",
+    },
   },
-},
-{ timestamps: true 
-
-}
+  { timestamps: true }
 );
 
-module.exports = mongoose.model("Payment", paymentSchema);
-
-
+const Payment = mongoose.model("Payment", paymentSchema);
+export default Payment;

@@ -27,6 +27,11 @@ const orderSchema = new mongoose.Schema(
       },
     ],
 
+    totalPrice: {
+      type: Number,
+      required: true, // required to match seed
+    },
+
     status: {
       type: String,
       enum: ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"],
@@ -47,3 +52,4 @@ const orderSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("Order", orderSchema);
+

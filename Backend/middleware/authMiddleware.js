@@ -15,20 +15,28 @@ export const protect = async (req, res, next) => {
 
       // Attach user to request (exclude password)
       req.user = await User.findById(decoded.id).select("-password");
+
       if (!req.user) {
         return res.status(401).json({ success: false, message: "User not found" });
       }
+
+      // ✅ Log for debugging
+      console.log("✅ Logged in user:", req.user);
 
       next();
     } else {
       return res.status(401).json({ success: false, message: "Not authorized, no token" });
     }
   } catch (error) {
-    return res.status(401).json({ success: false, message: "Not authorized, token failed", error: error.message });
+    return res.status(401).json({
+      success: false,
+      message: "Not authorized, token failed",
+      error: error.message,
+    });
   }
 };
 
-//  Admin middleware
+// ✅ Admin middleware (add this below protect)
 export const admin = (req, res, next) => {
   if (req.user && req.user.role === "Admin") {
     next();

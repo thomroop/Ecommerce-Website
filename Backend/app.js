@@ -1,29 +1,89 @@
 import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+import cors from "cors";
+
+// Route imports
+import uploadRoutes from "./routes/UploadRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import bannerRoutes from "./routes/bannerRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js"; // ✅ ADD THIS LINE
+import { protect } from "./middleware/authMiddleware.js";
+import stripeRoutes from "./routes/stripeRoutes.js";
 
 const app = express();
 
-// Middleware to parse JSON
+// ------------------------------
+// Setup __dirname for ES Modules
+// ------------------------------
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ------------------------------
+// ✅ Enable CORS
+// ------------------------------
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || /^http:\/\/localhost:\d+$/.test(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
+// ------------------------------
+// Middleware
+// ------------------------------
 app.use(express.json());
 
+// ------------------------------
+// Serve static uploads
+// ------------------------------
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// ------------------------------
 // Test route
+// ------------------------------
 app.get("/", (req, res) => {
-  res.send("API is running...");
+  res.send("✅ API is running successfully...");
 });
 
-// Mount routes
+app.use("/api/stripe", stripeRoutes);
+
+// ------------------------------
+// ✅ Mount Routes
+// ------------------------------
+app.use("/api/upload", uploadRoutes);
+app.use("/api/banners", bannerRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
-app.use("/api/cart", cartRoutes);
+app.use("/api/cart", protect, cartRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/orders", orderRoutes); // ✅ ADD THIS LINE
 
+// ------------------------------
+// 404 Handler
+// ------------------------------
+app.use((req, res, next) => {
+  res.status(404).json({ message: `Route ${req.originalUrl} not found` });
+});
 
-// 404 handler for undefined routes
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: "Route not found" });
+// ------------------------------
+// Global Error Handler
+// ------------------------------
+app.use((err, req, res, next) => {
+  console.error("❌ Error:", err.stack);
+  const status = err.status || 500;
+  res.status(status).json({ message: err.message || "Server Error" });
 });
 
 export default app;
+
+

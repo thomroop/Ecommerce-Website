@@ -1,16 +1,18 @@
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
-import app from "./app.js";
-import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import app from "./app.js"; // ✅ Import the main Express app
 
+// ✅ Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
+// ✅ Connect to MongoDB
 connectDB();
 
-// Error handling middleware (must come after route mounting)
-app.use(notFound);
-app.use(errorHandler);
+// ✅ Register models before starting routes
+import "./models/Category.js";
+import "./models/Product.js";
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// ✅ Start server
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+

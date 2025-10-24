@@ -74,11 +74,12 @@ const userSchema = new mongoose.Schema(
 
     forgotPasswordOtp: {
       type: String,
-      default: "",
+      default: null,
     },
 
     forgotPasswordExpiry: {
       type: Date,
+      default: null
     },
   },
   {
