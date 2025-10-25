@@ -1,3 +1,7 @@
+// @desc    AdminProducts Page - Displays all products for admins with edit and delete options
+// @route   Frontend Admin Page
+// @access  Private (Admin only)
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -5,7 +9,7 @@ const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch products
+  // ✅ Fetch products from backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -25,7 +29,9 @@ const AdminProducts = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4 text-yellow-600">Product Management</h1>
+      <h1 className="text-2xl font-bold mb-4 text-yellow-600">
+        Product Management
+      </h1>
 
       <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-200">

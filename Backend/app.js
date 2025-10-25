@@ -1,23 +1,27 @@
+// @desc    Main Application File - Initializes Express app, middleware, routes, and global error handling
+// @route   Root
+// @access  Public
+
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
 
-// Route imports
+// ✅ Route imports
 import uploadRoutes from "./routes/UploadRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import bannerRoutes from "./routes/bannerRoutes.js";
-import orderRoutes from "./routes/orderRoutes.js"; // ✅ ADD THIS LINE
-import { protect } from "./middleware/authMiddleware.js";
+import orderRoutes from "./routes/orderRoutes.js";
 import stripeRoutes from "./routes/stripeRoutes.js";
+import { protect } from "./middleware/authMiddleware.js";
 
 const app = express();
 
 // ------------------------------
-// Setup __dirname for ES Modules
+// ✅ Setup __dirname for ES Modules
 // ------------------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,23 +43,21 @@ app.use(
 );
 
 // ------------------------------
-// Middleware
+// ✅ Middleware
 // ------------------------------
 app.use(express.json());
 
 // ------------------------------
-// Serve static uploads
+// ✅ Serve static uploads
 // ------------------------------
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ------------------------------
-// Test route
+// ✅ Test route
 // ------------------------------
 app.get("/", (req, res) => {
   res.send("✅ API is running successfully...");
 });
-
-app.use("/api/stripe", stripeRoutes);
 
 // ------------------------------
 // ✅ Mount Routes
@@ -66,17 +68,18 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", protect, cartRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/orders", orderRoutes); // ✅ ADD THIS LINE
+app.use("/api/orders", orderRoutes);
+app.use("/api/stripe", stripeRoutes); // ✅ Stripe route
 
 // ------------------------------
-// 404 Handler
+// ✅ 404 Handler
 // ------------------------------
 app.use((req, res, next) => {
   res.status(404).json({ message: `Route ${req.originalUrl} not found` });
 });
 
 // ------------------------------
-// Global Error Handler
+// ✅ Global Error Handler
 // ------------------------------
 app.use((err, req, res, next) => {
   console.error("❌ Error:", err.stack);
@@ -85,5 +88,7 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
+
+
 
 

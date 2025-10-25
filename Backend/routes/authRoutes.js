@@ -1,36 +1,57 @@
+// @desc    Authentication Routes - Handles user registration, login, password reset, and profile retrieval
+// @route   /api/auth
+// @access  Public (some routes are protected)
+
 import express from "express";
 import {
   registerUser,
   loginUser,
   forgotPassword,
   resetPassword,
-  getUserProfile, 
-   
+  getUserProfile,
 } from "../controllers/authcontrollers.js";
 
-import { protect } from "../middleware/authMiddleware.js"; // ✅ Add this
-
+import { protect } from "../middleware/authMiddleware.js"; // ✅ Middleware to verify JWT token
 
 console.log("✅ authRoutes loaded successfully");
 
 const router = express.Router();
 
-// Registration
+/**
+ * @desc    Register a new user
+ * @route   POST /api/auth/register
+ * @access  Public
+ */
 router.post("/register", registerUser);
 
-// Login
+/**
+ * @desc    Login user and return JWT token
+ * @route   POST /api/auth/login
+ * @access  Public
+ */
 router.post("/login", loginUser);
 
-// Forgot Password
+/**
+ * @desc    Send OTP to user's registered email for password reset
+ * @route   POST /api/auth/forgot-password
+ * @access  Public
+ */
 router.post("/forgot-password", forgotPassword);
 
-// Reset Password
+/**
+ * @desc    Reset user password using OTP
+ * @route   POST /api/auth/reset-password
+ * @access  Public
+ */
 router.post("/reset-password", resetPassword);
 
-// ✅ NEW: Get Logged-In User Profile
+/**
+ * @desc    Get logged-in user's profile
+ * @route   GET /api/auth/profile
+ * @access  Private (requires valid JWT token)
+ */
 router.get("/profile", protect, getUserProfile);
 
 export default router;
-
 
 

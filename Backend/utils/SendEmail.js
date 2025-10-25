@@ -1,18 +1,30 @@
+// @desc    Email Utility - Sends OTP and notification emails using Nodemailer
+// @route   Utility Function
+// @access  Private (used internally for user authentication flows)
+
 import nodemailer from "nodemailer";
 
+/**
+ * @desc    Send a styled OTP email for password reset or verification
+ * @param   {string} to - Recipient's email address
+ * @param   {string} subject - Subject of the email
+ * @param   {string} otp - One-Time Password for verification or password reset
+ * @access  Private
+ */
 const sendEmail = async (to, subject, otp) => {
   try {
+    // ✅ Configure SMTP transporter using environment variables
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
-      secure: false, // false for TLS (port 587)
+      secure: false, // false for TLS (use true for SSL - port 465)
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
     });
 
-    // ✅ Styled HTML email template
+    // ✅ Define HTML structure for a styled email template
     const html = `
       <div style="font-family: 'Segoe UI', sans-serif; background-color: #f4f4f4; padding: 30px;">
         <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
@@ -39,6 +51,7 @@ const sendEmail = async (to, subject, otp) => {
               This OTP is valid for <b>10 minutes</b>. If you didn’t request a password reset, you can safely ignore this email.
             </p>
 
+            <!-- Call-to-action button -->
             <a href="${process.env.FRONTEND_URL}/reset-password" 
               style="display: inline-block; margin-top: 20px; background: #3b82f6; color: white; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: 500;">
               Reset Password
@@ -53,13 +66,15 @@ const sendEmail = async (to, subject, otp) => {
       </div>
     `;
 
+    // ✅ Define mail options
     const mailOptions = {
-      from: process.env.SMTP_FROM,
-      to,
-      subject,
-      html,
+      from: process.env.SMTP_FROM, // Sender email address (from .env)
+      to, // Recipient
+      subject, // Subject line
+      html, // HTML email content
     };
 
+    // ✅ Send the email
     await transporter.sendMail(mailOptions);
     console.log(`📧 Styled OTP email sent successfully to ${to}`);
   } catch (error) {
@@ -69,3 +84,4 @@ const sendEmail = async (to, subject, otp) => {
 };
 
 export default sendEmail;
+

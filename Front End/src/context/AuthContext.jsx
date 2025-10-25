@@ -1,3 +1,7 @@
+// @desc    AuthContext - Manages user authentication, token storage, and profile retrieval across the app
+// @route   Frontend Context
+// @access  Private (shared with all authenticated components)
+
 import React, { createContext, useState, useEffect } from "react";
 import { loginUser, registerUser, getProfile } from "../api/authApi";
 
@@ -23,7 +27,7 @@ const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  // ✅ LOGIN FUNCTION (Fixed)
+  // ✅ LOGIN FUNCTION
   const login = async (data) => {
     try {
       const res = await loginUser(data);
@@ -75,4 +79,5 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
+
 

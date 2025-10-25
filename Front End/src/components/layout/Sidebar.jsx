@@ -1,3 +1,7 @@
+// @desc    Sidebar Component - Provides collapsible admin navigation with links to dashboard sections
+// @route   Frontend Layout Component
+// @access  Private (Admin only)
+
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
@@ -32,7 +36,7 @@ const Sidebar = () => {
         </h1>
       )}
 
-      {/* Nav Links */}
+      {/* Navigation Links */}
       <nav className="flex flex-col gap-4">
         <NavLink
           to="/admin"
@@ -103,3 +107,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+

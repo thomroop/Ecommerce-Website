@@ -1,3 +1,7 @@
+// @desc    DashboardCards Component - Displays summary cards for key admin statistics like products, orders, users, and revenue
+// @route   Frontend Admin Component
+// @access  Private (Admin only)
+
 import React from "react";
 
 const DashboardCards = () => {

@@ -1,4 +1,7 @@
-// src/pages/ForgotPassword.jsx
+// @desc    ForgotPassword Page - Allows users to request a password reset by sending an OTP to their registered email
+// @route   Frontend Public Page
+// @access  Public
+
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify"; // ✅ Import toast

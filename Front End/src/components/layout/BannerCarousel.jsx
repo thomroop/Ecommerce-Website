@@ -1,8 +1,11 @@
+// @desc    BannerCarousel Component - Displays rotating promotional banners with smooth transitions
+// @route   Frontend Component
+// @access  Public
+
 import React, { useEffect, useState } from "react";
 import banner1 from "../../assets/Banners/banner1.webp";
 import banner2 from "../../assets/Banners/banner2.webp";
 import banner3 from "../../assets/Banners/banner3.webp";
-
 
 const BannerCarousel = () => {
   const banners = [banner1, banner2, banner3];
@@ -27,5 +30,6 @@ const BannerCarousel = () => {
 };
 
 export default BannerCarousel;
+
 
 

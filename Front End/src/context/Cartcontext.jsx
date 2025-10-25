@@ -1,3 +1,8 @@
+// @desc    CartContext - Manages cart state, including adding, removing, and clearing products
+// @route   Frontend Context
+// @access  Private (shared with authenticated users)
+
+
 // src/context/CartContext.jsx
 import React, { createContext, useState } from "react";
 
@@ -6,6 +11,7 @@ export const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
+  // ✅ Add product to cart (or increase quantity if already exists)
   const addToCart = (product) => {
     const exist = cart.find((item) => item.id === product.id);
     if (exist) {
@@ -19,6 +25,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // ✅ Remove product from cart (or decrease quantity)
   const removeFromCart = (id) => {
     const exist = cart.find((item) => item.id === id);
     if (!exist) return;
@@ -33,6 +40,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // ✅ Clear entire cart
   const clearCart = () => setCart([]);
 
   return (

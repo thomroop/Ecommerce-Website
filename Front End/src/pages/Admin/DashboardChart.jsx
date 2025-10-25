@@ -1,5 +1,17 @@
+// @desc    DashboardChart Component - Displays weekly order trends using a responsive line chart
+// @route   Frontend Admin Component
+// @access  Private (Admin only)
+
 import React from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const DashboardChart = () => {
   const data = [
@@ -14,14 +26,21 @@ const DashboardChart = () => {
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md">
-      <h3 className="text-lg font-semibold mb-4 text-gray-700">Weekly Orders Overview</h3>
+      <h3 className="text-lg font-semibold mb-4 text-gray-700">
+        Weekly Orders Overview
+      </h3>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Line type="monotone" dataKey="orders" stroke="#facc15" strokeWidth={3} />
+          <Line
+            type="monotone"
+            dataKey="orders"
+            stroke="#facc15"
+            strokeWidth={3}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -29,3 +48,4 @@ const DashboardChart = () => {
 };
 
 export default DashboardChart;
+

@@ -1,3 +1,7 @@
+// @desc    ManageUsers Page - Allows admin to view, search, and delete registered users with role-based access
+// @route   Frontend Admin Page
+// @access  Private (Admin only)
+
 import React, { useEffect, useState, useRef } from "react";
 import { Users, Search, Eye, Trash2 } from "lucide-react";
 import axios from "axios";
@@ -12,7 +16,7 @@ const ManageUsers = () => {
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
 
-  // ✅ Add this ref to prevent duplicate toast on React Strict Mode double render
+  // ✅ Prevent duplicate toast on React Strict Mode double render
   const toastShown = useRef(false);
 
   useEffect(() => {

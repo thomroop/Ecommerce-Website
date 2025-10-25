@@ -1,3 +1,7 @@
+// @desc    Footer Component - Displays website footer with copyright information
+// @route   Frontend Component
+// @access  Public
+
 import React from "react";
 
 const Footer = () => {
@@ -11,3 +15,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

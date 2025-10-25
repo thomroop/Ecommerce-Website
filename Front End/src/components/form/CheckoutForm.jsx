@@ -1,3 +1,7 @@
+// @desc    CheckoutForm Component - Handles Stripe payment confirmation and user feedback during checkout
+// @route   Frontend Component
+// @access  Private (accessible to authenticated users during checkout)
+
 import React, { useState } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 

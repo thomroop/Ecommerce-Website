@@ -1,3 +1,7 @@
+// @desc    ManageOrders Page - Allows admin to view, search, filter, and update customer orders in real time
+// @route   Frontend Admin Page
+// @access  Private (Admin only)
+
 import React, { useEffect, useState, useRef } from "react";
 import { ShoppingCart, Search, Filter, Eye } from "lucide-react";
 import axios from "axios";
@@ -244,6 +248,7 @@ const ManageOrders = () => {
 };
 
 export default ManageOrders;
+
 
 
 

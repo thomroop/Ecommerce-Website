@@ -1,9 +1,14 @@
+// @desc    Register Page - Handles new user registration with validation and redirects to login upon success
+// @route   Frontend Public Page
+// @access  Public
+
 import React, { useState, useContext } from "react";
-import { AuthContext } from "../../context/AuthContext"; 
+import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { validateEmail, validatePassword } from "../../utils/validation"; // ✅ Import validation functions
 
 const Register = () => {
-  const { register } = useContext(AuthContext); 
+  const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -24,8 +29,13 @@ const Register = () => {
     setError("");
     setSuccess("");
 
-    // ✅ Basic validation
-    if (formData.password.length < 6) {
+    // ✅ Use imported validation functions
+    if (!validateEmail(formData.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!validatePassword(formData.password)) {
       setError("Password must be at least 6 characters");
       return;
     }
@@ -46,8 +56,11 @@ const Register = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 shadow-lg rounded-lg w-96">
-        <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
+      <div className="bg-white p-6 shadow-xl rounded-2xl w-96 border border-gray-100">
+        <h2 className="text-3xl font-bold mb-4 text-center text-teal-700">
+          Create an Account
+        </h2>
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="text"
@@ -55,16 +68,16 @@ const Register = () => {
             placeholder="Full Name"
             value={formData.name}
             onChange={handleChange}
-            className="border p-2 rounded"
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
             required
           />
           <input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder="Email Address"
             value={formData.email}
             onChange={handleChange}
-            className="border p-2 rounded"
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
             required
           />
           <input
@@ -73,7 +86,7 @@ const Register = () => {
             placeholder="Phone Number"
             value={formData.phone}
             onChange={handleChange}
-            className="border p-2 rounded"
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
             required
           />
           <input
@@ -82,19 +95,22 @@ const Register = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="border p-2 rounded"
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
             required
           />
+
+          {/* ✅ Updated button colors */}
           <button
-            className="bg-yellow-500 text-white py-2 rounded hover:bg-orange-600"
+            className="bg-gradient-to-r from-teal-600 to-slate-600 text-white py-2 rounded-lg hover:from-teal-700 hover:to-slate-700 transition-all font-semibold shadow-md"
             type="submit"
           >
             Register
           </button>
         </form>
 
-        {error && <p className="text-red-500 mt-2">{error}</p>}
-        {success && <p className="text-green-500 mt-2">{success}</p>}
+        {/* ✅ Modern error/success colors */}
+        {error && <p className="text-red-500 mt-3 text-center">{error}</p>}
+        {success && <p className="text-teal-600 mt-3 text-center">{success}</p>}
       </div>
     </div>
   );

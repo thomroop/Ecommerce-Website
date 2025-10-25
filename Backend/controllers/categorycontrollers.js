@@ -1,7 +1,13 @@
+// @file    controllers/categoryController.js
+// @desc    Handles category CRUD operations (Admin only for create, update, delete)
+// @access  Public / Admin
+
 import Category from "../models/Category.js";
 import { successResponse, errorResponse } from "../constants/response.js";
 
-// Create category (Admin only)
+// @desc    Create a new category
+// @route   POST /api/categories
+// @access  Private (Admin)
 export const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
@@ -18,7 +24,9 @@ export const createCategory = async (req, res) => {
   }
 };
 
-// Get all categories
+// @desc    Get all categories
+// @route   GET /api/categories
+// @access  Public
 export const getCategories = async (req, res) => {
   try {
     const categories = await Category.find();
@@ -28,7 +36,9 @@ export const getCategories = async (req, res) => {
   }
 };
 
-// Update category (Admin only)
+// @desc    Update category details
+// @route   PUT /api/categories/:id
+// @access  Private (Admin)
 export const updateCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
@@ -46,7 +56,9 @@ export const updateCategory = async (req, res) => {
   }
 };
 
-// Delete category (Admin only)
+// @desc    Delete a category
+// @route   DELETE /api/categories/:id
+// @access  Private (Admin)
 export const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);

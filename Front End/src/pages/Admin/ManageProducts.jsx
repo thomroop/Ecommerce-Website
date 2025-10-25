@@ -1,4 +1,7 @@
-// src/pages/Admin/ManageProducts.jsx
+// @desc    ManageProducts Page - Enables admin to add, edit, and delete products using Redux for state management
+// @route   Frontend Admin Page
+// @access  Private (Admin only)
+
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -155,6 +158,7 @@ const ManageProducts = () => {
 };
 
 export default ManageProducts;
+
 
 
 

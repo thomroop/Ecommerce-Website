@@ -1,3 +1,7 @@
+// @desc    DashboardSidebar Component - Provides navigation links for admin pages (Dashboard, Products, Orders, Users)
+// @route   Frontend Admin Component
+// @access  Private (Admin only)
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -108,5 +112,6 @@ const DashboardSidebar = () => {
 };
 
 export default DashboardSidebar;
+
 
 

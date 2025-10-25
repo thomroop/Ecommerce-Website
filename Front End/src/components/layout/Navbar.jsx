@@ -1,3 +1,7 @@
+// @desc    Navbar Component - Displays responsive navigation with role-based links and authentication handling
+// @route   Frontend Component
+// @access  Public (links vary based on user authentication and role)
+
 import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
@@ -6,7 +10,7 @@ import {
   AiOutlineLogin,
   AiOutlineLogout,
   AiOutlineMenu,
-  AiOutlineUserAdd, // ✅ Import Register icon
+  AiOutlineUserAdd,
 } from "react-icons/ai";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { AuthContext } from "../../context/AuthContext";
@@ -96,7 +100,6 @@ const Navbar = () => {
                 <AiOutlineLogin /> Login
               </NavLink>
 
-              {/* ✅ Register Icon added here */}
               <NavLink
                 to="/register"
                 className={({ isActive }) =>
@@ -123,3 +126,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

@@ -1,3 +1,7 @@
+// @desc    CategoryFilter Component - Displays product categories and handles category-based filtering
+// @route   Frontend Component
+// @access  Public
+
 // src/components/CategoryFilter.jsx
 import React from "react";
 

@@ -1,4 +1,7 @@
-// src/pages/ResetPassword.jsx
+// @desc    ResetPassword Page - Allows users to reset their password securely using OTP verification
+// @route   Frontend Public Page
+// @access  Public
+
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify"; // ✅ Import toast
@@ -21,7 +24,7 @@ const ResetPassword = () => {
       );
 
       // ✅ Success toast
-      toast.success(res.data.message || "Password reset successful!");
+      toast.success(res.data.message || "Password reset successful! 🔐");
 
       // Optional: clear inputs
       setEmail("");
@@ -29,7 +32,9 @@ const ResetPassword = () => {
       setNewPassword("");
     } catch (err) {
       // ✅ Error toast
-      toast.error(err.response?.data?.message || "Invalid OTP or email. Try again.");
+      toast.error(
+        err.response?.data?.message || "Invalid OTP or email. Try again. ❌"
+      );
     } finally {
       setLoading(false);
     }

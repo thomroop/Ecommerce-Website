@@ -1,8 +1,13 @@
+// @desc    Login Page - Authenticates users, displays role-based navigation, and provides toast notifications on success or failure
+// @route   Frontend Public Page
+// @access  Public
+
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { toast } from "react-toastify"; // ✅ import toast
-import "react-toastify/dist/ReactToastify.css"; // ✅ toastify CSS
+import { toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css"; 
+import { validateEmail, validatePassword } from "../../utils/validation"; // ✅ imported utils
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -17,6 +22,25 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
+    // ✅ Validation before sending request
+    if (!validateEmail(formData.email)) {
+      toast.error("Please enter a valid email address ❌", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (!validatePassword(formData.password)) {
+      toast.error("Password must be at least 6 characters ❌", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       const userData = await login(formData);
 
@@ -26,7 +50,7 @@ const Login = () => {
         autoClose: 2000,
       });
 
-      // ✅ Redirect based on role
+      // ✅ Role-based redirect
       if (userData.role?.toLowerCase() === "admin") {
         navigate("/admin");
       } else {
@@ -35,7 +59,6 @@ const Login = () => {
     } catch (err) {
       console.error("Login failed:", err);
 
-      // ✅ Error toast
       toast.error(
         err.response?.data?.message || "Invalid email or password ❌",
         {
@@ -51,7 +74,7 @@ const Login = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="max-w-md w-full bg-white p-6 shadow-lg rounded-xl">
-        <h2 className="text-2xl font-bold mb-4 text-center text-yellow-600">
+        <h2 className="text-2xl font-bold mb-4 text-center text-teal-600">
           Login
         </h2>
 
@@ -62,7 +85,7 @@ const Login = () => {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full border p-2 rounded focus:ring-2 focus:ring-yellow-400 outline-none"
+            className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400 outline-none"
             required
           />
           <input
@@ -71,7 +94,7 @@ const Login = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full border p-2 rounded focus:ring-2 focus:ring-yellow-400 outline-none"
+            className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400 outline-none"
             required
           />
 
@@ -81,7 +104,7 @@ const Login = () => {
             className={`w-full text-white py-2 rounded transition-colors ${
               loading
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-yellow-500 hover:bg-yellow-600"
+                : "bg-teal-500 hover:bg-teal-600"
             }`}
           >
             {loading ? "Logging in..." : "Login"}
@@ -100,6 +123,7 @@ const Login = () => {
 };
 
 export default Login;
+
 
 
 

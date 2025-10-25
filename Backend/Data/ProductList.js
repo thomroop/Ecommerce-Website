@@ -1,3 +1,7 @@
+// @desc    Product Data - Contains sample product listings used for seeding or frontend display
+// @route   Data File
+// @access  Public
+
 // Backend/data/ProductList.js
 
 const productData = [

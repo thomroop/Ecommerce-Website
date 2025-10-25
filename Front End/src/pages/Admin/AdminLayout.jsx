@@ -1,15 +1,11 @@
+// @desc    AdminLayout Component - Defines layout for all admin pages with sidebar and dynamic main content
+// @route   Frontend Layout Component
+// @access  Private (Admin only)
+
 // src/pages/Admin/AdminLayout.jsx
 import React from "react";
 import { Outlet } from "react-router-dom";
 import DashboardSidebar from "./DashboardSidebar";
-
-/**
- * AdminLayout.jsx
- * Layout for all admin pages.
- * Contains:
- * - Sidebar (left)
- * - Main area (renders current admin page using <Outlet />)
- */
 
 const AdminLayout = () => {
   return (
@@ -17,7 +13,7 @@ const AdminLayout = () => {
       {/* Sidebar stays constant */}
       <DashboardSidebar />
 
-      {/* Main area shows whatever admin route is active */}
+      {/* Main area shows the active admin route */}
       <main className="flex-1 p-6 overflow-y-auto">
         <Outlet />
       </main>
@@ -26,4 +22,5 @@ const AdminLayout = () => {
 };
 
 export default AdminLayout;
+
 

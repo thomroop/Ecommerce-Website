@@ -1,3 +1,7 @@
+// @file    controllers/authControllers.js
+// @desc    Handles user authentication, registration, and password management
+// @access  Public and Private (depending on route)
+
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -5,12 +9,13 @@ import crypto from "crypto";
 import responseMessages from "../constants/messages.js";
 import { successResponse, errorResponse } from "../constants/response.js";
 import STATUS_CODES from "../constants/httpStatus.js";
-import sendEmail from "../utilis/SendEmail.js";
+import sendEmail from "../utils/SendEmail.js";
 
+console.log("✅ authControllers file loaded");
 
-console.log("✅ authcontrollers file loaded");
-
-// ✅ REGISTER USER
+// @desc    Register a new user
+// @route   POST /api/auth/register
+// @access  Public
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
@@ -44,16 +49,13 @@ export const registerUser = async (req, res) => {
       STATUS_CODES.CREATED
     );
   } catch (error) {
-    return errorResponse(
-      res,
-      STATUS_CODES.INTERNAL_SERVER_ERROR,
-      error.message || "Internal Server Error"
-    );
+    return errorResponse(res, STATUS_CODES.INTERNAL_SERVER_ERROR, error.message);
   }
 };
 
-
-// ✅ LOGIN USER
+// @desc    Login user and return JWT token
+// @route   POST /api/auth/login
+// @access  Public
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -86,15 +88,13 @@ export const loginUser = async (req, res) => {
       responseMessages.LOGIN_SUCCESS
     );
   } catch (error) {
-    return errorResponse(
-      res,
-      STATUS_CODES.INTERNAL_SERVER_ERROR,
-      error.message || "Internal Server Error"
-    );
+    return errorResponse(res, STATUS_CODES.INTERNAL_SERVER_ERROR, error.message);
   }
 };
 
-// ✅ FORGOT PASSWORD (Send OTP)
+// @desc    Send OTP for password reset
+// @route   POST /api/auth/forgot-password
+// @access  Public
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -108,9 +108,9 @@ export const forgotPassword = async (req, res) => {
       return errorResponse(res, STATUS_CODES.NOT_FOUND, "User not found");
     }
 
-    // Generate a 6-digit OTP
+    // Generate 6-digit OTP (valid for 10 minutes)
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiry = Date.now() + 10 * 60 * 1000; // 10 minutes
+    const expiry = Date.now() + 10 * 60 * 1000;
 
     user.forgotPasswordOtp = otp;
     user.forgotPasswordExpiry = expiry;
@@ -131,7 +131,9 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
-// ✅ RESET PASSWORD (Verify OTP)
+// @desc    Reset password using OTP
+// @route   POST /api/auth/reset-password
+// @access  Public
 export const resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
@@ -143,7 +145,7 @@ export const resetPassword = async (req, res) => {
     const user = await User.findOne({
       email,
       forgotPasswordOtp: otp,
-      forgotPasswordExpiry: { $gt: Date.now() }, // Check if OTP is still valid
+      forgotPasswordExpiry: { $gt: Date.now() },
     });
 
     if (!user) {
@@ -162,7 +164,9 @@ export const resetPassword = async (req, res) => {
   }
 };
 
-// ✅ GET USER PROFILE
+// @desc    Get logged-in user's profile
+// @route   GET /api/auth/profile
+// @access  Private
 export const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -171,22 +175,10 @@ export const getUserProfile = async (req, res) => {
       return errorResponse(res, STATUS_CODES.NOT_FOUND, "User not found");
     }
 
-    // Success response with user details
-    return successResponse(
-      res,
-      user,
-      "User profile fetched successfully",
-      STATUS_CODES.OK
-    );
+    return successResponse(res, user, "User profile fetched successfully", STATUS_CODES.OK);
   } catch (error) {
-    return errorResponse(
-      res,
-      STATUS_CODES.INTERNAL_SERVER_ERROR,
-      error.message || "Internal Server Error"
-    );
+    return errorResponse(res, STATUS_CODES.INTERNAL_SERVER_ERROR, error.message);
   }
 };
 
-
-
-console.log("✅ authcontrollers loaded successfully");
+console.log("✅ authControllers loaded successfully");

@@ -1,12 +1,17 @@
+// @file    controllers/cartController.js
+// @desc    Handles all shopping cart-related operations
+// @access  Private (requires authentication)
+
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
 import { successResponse, errorResponse } from "../constants/response.js";
 
-// 🛒 Get user's cart
-// GET /api/cart
+// @desc    Get logged-in user's cart
+// @route   GET /api/cart
+// @access  Private
 export const getCart = async (req, res) => {
   try {
-    const userId = req.user._id; // ✅ automatically from logged-in user
+    const userId = req.user._id;
     const cart = await Cart.findOne({ user: userId }).populate("items.product");
 
     if (!cart) return errorResponse(res, 404, "Cart not found");
@@ -16,8 +21,9 @@ export const getCart = async (req, res) => {
   }
 };
 
-// ➕ Add or update item in cart
-// POST /api/cart/item
+// @desc    Add or update an item in the cart
+// @route   POST /api/cart/item
+// @access  Private
 export const addOrUpdateItem = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -53,8 +59,9 @@ export const addOrUpdateItem = async (req, res) => {
   }
 };
 
-// ❌ Remove an item from cart
-// DELETE /api/cart/item/:productId
+// @desc    Remove a specific item from the cart
+// @route   DELETE /api/cart/item/:productId
+// @access  Private
 export const removeItem = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -74,8 +81,9 @@ export const removeItem = async (req, res) => {
   }
 };
 
-// 🧹 Clear entire cart
-// DELETE /api/cart/clear
+// @desc    Clear entire cart for the logged-in user
+// @route   DELETE /api/cart/clear
+// @access  Private
 export const clearCart = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -91,9 +99,9 @@ export const clearCart = async (req, res) => {
   }
 };
 
-
-// 📊 Get cart summary for all users (admin analytics)
-// GET /api/cart/summary
+// @desc    Generate a summary of all user carts (Admin analytics)
+// @route   GET /api/cart/summary
+// @access  Private (Admin)
 export const getCartSummary = async (req, res) => {
   try {
     const summary = await Cart.aggregate([

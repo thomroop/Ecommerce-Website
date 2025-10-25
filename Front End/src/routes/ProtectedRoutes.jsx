@@ -1,30 +1,48 @@
+// @desc    ProtectedRoute - Restricts access to authenticated users and supports role-based control
+// @route   Frontend Routing Guard
+// @access  Private (User / Admin based on role)
+
 import React, { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 
 /**
- * ✅ ProtectedRoute component
+ * ✅ Usage Examples:
  * 
- * Usage:
- *  <ProtectedRoute /> → Protects route for any logged-in user
- *  <ProtectedRoute requiredRole="Admin" /> → Only Admins can access
- *  <ProtectedRoute requiredRole="User" /> → Only regular Users can access
+ * 🔒 General (any logged-in user):
+ *    <Route element={<ProtectedRoute />}>
+ *       <Route path="/profile" element={<ProfilePage />} />
+ *    </Route>
+ * 
+ * 👑 Admin-only access:
+ *    <Route element={<ProtectedRoute requiredRole="Admin" />}>
+ *       <Route path="/admin/*" element={<AdminPage />} />
+ *    </Route>
+ * 
+ * 🛍️ User checkout (both User & Admin can access):
+ *    <Route element={<ProtectedRoute requiredRole="User" />}>
+ *       <Route path="/checkout" element={<CheckoutPage />} />
+ *    </Route>
  */
+
 const ProtectedRoute = ({ requiredRole }) => {
   const { user } = useContext(AuthContext);
 
-  // ✅ Case 1: User is not logged in
+  // 🧭 Case 1: User not logged in → redirect to login
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // ✅ Case 2: Role mismatch
-  // Example: requiredRole = "Admin" but user.role = "User"
-  if (requiredRole && user.role?.toLowerCase() !== requiredRole.toLowerCase()) {
+  // 🚫 Case 2: Role mismatch → redirect to home
+  // Allow admin access for user routes (flexible)
+  if (
+    requiredRole &&
+    ![requiredRole.toLowerCase(), "admin"].includes(user.role?.toLowerCase())
+  ) {
     return <Navigate to="/" replace />;
   }
 
-  // ✅ Case 3: User is authorized — show the nested routes
+  // ✅ Case 3: Authorized → show nested route content
   return <Outlet />;
 };
 

@@ -1,7 +1,9 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-//  Protect routes (only logged in users can access)
+// @desc    Protect routes - only allow access to logged-in users
+// @route   Middleware
+// @access  Private
 export const protect = async (req, res, next) => {
   try {
     let token;
@@ -13,14 +15,14 @@ export const protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Attach user to request (exclude password)
+      // Find user in database (exclude password)
       req.user = await User.findById(decoded.id).select("-password");
 
       if (!req.user) {
         return res.status(401).json({ success: false, message: "User not found" });
       }
 
-      // ✅ Log for debugging
+      // Log for debugging
       console.log("✅ Logged in user:", req.user);
 
       next();
@@ -36,7 +38,9 @@ export const protect = async (req, res, next) => {
   }
 };
 
-// ✅ Admin middleware (add this below protect)
+// @desc    Restrict access to admin-only routes
+// @route   Middleware
+// @access  Private/Admin
 export const admin = (req, res, next) => {
   if (req.user && req.user.role === "Admin") {
     next();
@@ -44,3 +48,4 @@ export const admin = (req, res, next) => {
     res.status(403).json({ success: false, message: "Admin access required" });
   }
 };
+

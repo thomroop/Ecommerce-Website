@@ -1,3 +1,7 @@
+// @desc    MiniLayout Component - Defines a two-column layout with a sidebar and main content area
+// @route   Frontend Layout Component
+// @access  Private (used for admin or protected sections)
+
 import React from "react";
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";

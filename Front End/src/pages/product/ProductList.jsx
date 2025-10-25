@@ -1,12 +1,16 @@
-// src/pages/product/ProductList.jsx
+// @desc    ProductList Page - Displays all available products with category filters and add-to-cart functionality
+// @route   Frontend Product Page
+// @access  Public
+
 import React, { useContext, useState } from "react";
 import { CartContext } from "../../context/Cartcontext";
-import BannerCarousel from "../../components/layout/BannerCarousel"; // adjust path if needed
+import BannerCarousel from "../../components/layout/BannerCarousel"; // ✅ Carousel for featured banners
 
 const ProductList = () => {
   const { addToCart } = useContext(CartContext);
   const BASE_URL = "http://localhost:8080";
 
+  // ✅ Sample Products (Static data — replace with API later if needed)
   const products = [
     // AirPods
     { id: 1, name: "AirPods Pro", category: "AirPods", price: 249, image: `${BASE_URL}/uploads/airpods/images-1760281187698.webp` },
@@ -14,25 +18,27 @@ const ProductList = () => {
     { id: 3, name: "AirPods Max", category: "AirPods", price: 549, image: `${BASE_URL}/uploads/airpods/images-1760283908537.webp` },
     { id: 4, name: "AirPods Pro 2", category: "AirPods", price: 279, image: `${BASE_URL}/uploads/airpods/images-1760283908539.webp` },
     { id: 5, name: "AirPods 2nd Gen", category: "AirPods", price: 159, image: `${BASE_URL}/uploads/airpods/images-1760284241875.webp` },
+
     // Cameras
     { id: 6, name: "Canon EOS R5", category: "Camera", price: 3899, image: `${BASE_URL}/uploads/cameras/images-1760284241876.jpg` },
     { id: 7, name: "Sony Alpha 7 IV", category: "Camera", price: 2799, image: `${BASE_URL}/uploads/cameras/images-1760284241877.jpg` },
     { id: 8, name: "Nikon Z6 II", category: "Camera", price: 1999, image: `${BASE_URL}/uploads/cameras/images-1760284268943.jpg` },
     { id: 9, name: "Canon EOS R6", category: "Camera", price: 2499, image: `${BASE_URL}/uploads/cameras/images-1760284268944.jpg` },
     { id: 10, name: "Sony Alpha 1", category: "Camera", price: 6499, image: `${BASE_URL}/uploads/cameras/images-1760284241876.jpg` },
+
     // Earphones
     { id: 11, name: "Bose QuietComfort Earbuds", category: "Earphones", price: 279, image: `${BASE_URL}/uploads/earphones/images-1760284197212.webp` },
     { id: 12, name: "Sony WF-1000XM4", category: "Earphones", price: 249, image: `${BASE_URL}/uploads/earphones/images-1760284197214.webp` },
     { id: 13, name: "JBL Live 300TWS", category: "Earphones", price: 149, image: `${BASE_URL}/uploads/earphones/images-1760284197212.webp` },
     { id: 14, name: "Apple EarPods", category: "Earphones", price: 29, image: `${BASE_URL}/uploads/earphones/images-1760284197212.webp` },
     { id: 15, name: "Samsung Galaxy Buds 2", category: "Earphones", price: 129, image: `${BASE_URL}/uploads/earphones/images-1760284197214.webp` },
+
     // Mobiles
     { id: 16, name: "iPhone 15 Pro", category: "Mobiles", price: 1099, image: `${BASE_URL}/uploads/mobiles/images-1760284332734.webp` },
     { id: 17, name: "Samsung Galaxy S23", category: "Mobiles", price: 999, image: `${BASE_URL}/uploads/mobiles/images-1760284332735.webp` },
     { id: 18, name: "Google Pixel 8", category: "Mobiles", price: 899, image: `${BASE_URL}/uploads/mobiles/images-1760284332739.webp` },
     { id: 19, name: "OnePlus 12", category: "Mobiles", price: 799, image: `${BASE_URL}/uploads/mobiles/images-1760284332735.webp` },
     { id: 20, name: "Xiaomi 14 Pro", category: "Mobiles", price: 699, image: `${BASE_URL}/uploads/mobiles/images-1760284332739.webp` },
-
 
     // Printers
     { id: 21, name: "HP LaserJet Pro", category: "Printers", price: 299, image: `${BASE_URL}/uploads/printers/images-1760284241877.webp` },
@@ -65,6 +71,7 @@ const ProductList = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("All");
 
+  // ✅ Filter products by selected category
   const filteredProducts =
     selectedCategory === "All"
       ? products
@@ -74,9 +81,11 @@ const ProductList = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4 text-yellow-600 text-center">Product List</h2>
+      <h2 className="text-2xl font-bold mb-4 text-yellow-600 text-center">
+        Product List
+      </h2>
 
-      {/* Centered Category Bar */}
+      {/* ✅ Category Filter Bar */}
       <div className="flex justify-center mb-6">
         <div className="flex flex-wrap gap-3 bg-gray-100 p-3 rounded-full shadow-md">
           {categories.map((cat) => (
@@ -95,12 +104,12 @@ const ProductList = () => {
         </div>
       </div>
 
-      {/* Banner Carousel */}
+      {/* ✅ Banner Carousel */}
       <div className="mb-6">
         <BannerCarousel />
       </div>
 
-      {/* Products Grid */}
+      {/* ✅ Product Grid */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {filteredProducts.map((product) => (
           <div
@@ -113,9 +122,11 @@ const ProductList = () => {
               className="w-full h-32 object-contain rounded-md mb-3"
             />
             <h3 className="text-md font-semibold text-center">{product.name}</h3>
-            <p className="text-gray-600 font-medium">₹{product.price.toLocaleString()}</p>
+            <p className="text-gray-600 font-medium">
+              ₹{product.price.toLocaleString()}
+            </p>
             <button
-              className="mt-2 px-4 py-1 bg-yellow-500 text-white rounded-lg hover:bg-orange-600"
+              className="mt-2 px-4 py-1 bg-yellow-500 text-white rounded-lg hover:bg-orange-600 transition"
               onClick={() => addToCart(product)}
             >
               Add to Cart
@@ -128,4 +139,3 @@ const ProductList = () => {
 };
 
 export default ProductList;
-

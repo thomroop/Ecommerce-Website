@@ -1,10 +1,14 @@
+// @desc    Order Model - Stores customer order details and status
+// @route   Model
+// @access  Private
 import mongoose from "mongoose";
 
+// Define schema for customer orders
 const orderSchema = new mongoose.Schema(
   {
     customer: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "User", // Reference to User (customer)
       required: true,
     },
 
@@ -12,44 +16,47 @@ const orderSchema = new mongoose.Schema(
       {
         product: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
+          ref: "Product", // Reference to Product
           required: true,
         },
         quantity: {
           type: Number,
           required: true,
-          min: 1,
+          min: 1, // Minimum 1 item per product
         },
         price: {
           type: Number,
-          required: true,
+          required: true, // Product price at time of order
         },
       },
     ],
 
     totalPrice: {
       type: Number,
-      required: true, // required to match seed
+      required: true, // Total cost of all ordered items
     },
 
     status: {
       type: String,
-      enum: ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"],
-      default: "Pending",
+      enum: ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"], // Allowed values
+      default: "Pending", // Default order status
     },
 
     payment: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Payment",
+      ref: "Payment", // Reference to Payment model
     },
 
     deliveryPerson: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "User", // Reference to delivery staff
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true, // Adds createdAt and updatedAt fields automatically
+  }
 );
 
+// Export Order model
 export default mongoose.model("Order", orderSchema);
 

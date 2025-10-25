@@ -1,4 +1,9 @@
+// @desc    Authentication API - Handles user registration, login, and profile retrieval via backend endpoints
+// @route   Frontend API
+// @access  Public (register, login) / Private (profile)
+
 // src/api/authApi.js
+
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
