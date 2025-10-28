@@ -17,6 +17,7 @@ import bannerRoutes from "./routes/bannerRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import stripeRoutes from "./routes/stripeRoutes.js";
 import { protect } from "./middleware/authMiddleware.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
 
@@ -70,7 +71,7 @@ app.use("/api/cart", protect, cartRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/stripe", stripeRoutes); // ✅ Stripe route
-
+app.use("/api/auth", contactRoutes);
 // ------------------------------
 // ✅ 404 Handler
 // ------------------------------

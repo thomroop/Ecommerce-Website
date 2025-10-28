@@ -8,38 +8,62 @@ import { loginUser, registerUser, getProfile } from "../api/authApi";
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  // ✅ Restore token & user from localStorage immediately
   const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || null
+  );
+  const [loading, setLoading] = useState(true); // Track authentication loading state
 
-  // ✅ Automatically fetch profile if token exists
+  // ✅ Auto-fetch profile if token exists (on refresh or first load)
   useEffect(() => {
-    if (token) {
-      getProfile(token)
-        .then((res) => {
-          // Match backend response structure
-          const userData = res.data || res.data?.data || res.user;
+    const fetchProfile = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await getProfile(token);
+        console.log("📡 Profile API raw response:", res);
+
+        // ✅ Extract correct user data (backend wraps data under 'data')
+        const userData = res.data || res.user || res;
+
+        if (userData) {
+          if (!userData.role) userData.role = "User"; // Default role
           setUser(userData);
-        })
-        .catch((err) => {
-          console.error("Profile fetch failed:", err);
-          logout(); // clear invalid token
-        });
-    }
+          localStorage.setItem("user", JSON.stringify(userData));
+          console.log("✅ Profile restored successfully:", userData);
+        } else {
+          console.warn("⚠️ No user data found in profile response.");
+          logout();
+        }
+      } catch (err) {
+        console.error("❌ Profile fetch failed:", err);
+        logout();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (token) fetchProfile();
+    else setLoading(false);
   }, [token]);
 
   // ✅ LOGIN FUNCTION
   const login = async (data) => {
     try {
       const res = await loginUser(data);
-
-      // Adjusted to match backend structure
       const token = res.token || res.data?.token;
-      const userData = res.data || res.user;
+      const userData = res.user || res.data?.user || res.data;
 
       if (!token) throw new Error("Token missing from server response");
 
-      // Save token and user to state + localStorage
+      if (!userData.role) userData.role = "User"; // Default role
+
       localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userData));
       setToken(token);
       setUser(userData);
 
@@ -66,18 +90,26 @@ const AuthProvider = ({ children }) => {
   // ✅ LOGOUT FUNCTION
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setToken(null);
     setUser(null);
     console.log("🚪 Logged out successfully");
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, loading, login, register, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
 export default AuthProvider;
+
+
+
+
+
 
 

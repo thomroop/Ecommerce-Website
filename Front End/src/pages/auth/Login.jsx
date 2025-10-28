@@ -5,9 +5,11 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { toast } from "react-toastify"; 
-import "react-toastify/dist/ReactToastify.css"; 
-import { validateEmail, validatePassword } from "../../utils/validation"; // ✅ imported utils
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { validateEmail, validatePassword } from "../../utils/validation";
+import PageWrapper from "../../components/common/PageWrapper"; // ✅ Background wrapper
+import SupportLink from "../../components/common/SupportLink"; // ✅ Reusable Support link
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -22,7 +24,6 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    // ✅ Validation before sending request
     if (!validateEmail(formData.email)) {
       toast.error("Please enter a valid email address ❌", {
         position: "top-center",
@@ -43,22 +44,14 @@ const Login = () => {
 
     try {
       const userData = await login(formData);
-
-      // ✅ Success toast
       toast.success(`Welcome back, ${userData.name || "User"}! 🎉`, {
         position: "top-center",
         autoClose: 2000,
       });
 
-      // ✅ Role-based redirect
-      if (userData.role?.toLowerCase() === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
+      if (userData.role?.toLowerCase() === "admin") navigate("/admin");
+      else navigate("/");
     } catch (err) {
-      console.error("Login failed:", err);
-
       toast.error(
         err.response?.data?.message || "Invalid email or password ❌",
         {
@@ -72,21 +65,21 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="max-w-md w-full bg-white p-6 shadow-lg rounded-xl">
-        <h2 className="text-2xl font-bold mb-4 text-center text-teal-600">
-          Login
+    <PageWrapper>
+      <div className="bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl w-96 p-8 border border-gray-200">
+        <h2 className="text-3xl font-bold mb-6 text-center text-teal-700">
+          Welcome Back
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder="Email Address"
             value={formData.email}
             onChange={handleChange}
-            className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400 outline-none"
             required
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 outline-none"
           />
           <input
             type="password"
@@ -94,35 +87,52 @@ const Login = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400 outline-none"
             required
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 outline-none"
           />
 
           <button
             type="submit"
             disabled={loading}
-            className={`w-full text-white py-2 rounded transition-colors ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-teal-500 hover:bg-teal-600"
+            className={`bg-gradient-to-r from-teal-600 to-slate-600 text-white py-2 rounded-lg font-semibold shadow-md hover:from-teal-700 hover:to-slate-700 transition-all ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
             }`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
-        {/* ✅ Forgot Password link */}
-        <div className="text-center mt-4">
-          <Link to="/forgot-password" className="text-blue-600 hover:underline">
+        {/* 🔗 Forgot + Register links */}
+        <div className="text-center mt-4 flex justify-center gap-4 text-sm">
+          <Link
+            to="/forgot-password"
+            className="text-teal-600 hover:underline font-medium"
+          >
             Forgot Password?
           </Link>
+          <span className="text-gray-400">|</span>
+          <Link
+            to="/register"
+            className="text-teal-600 hover:underline font-medium"
+          >
+            Register
+          </Link>
+        </div>
+
+        {/* 💬 Support link */}
+        <div className="mt-4">
+          <SupportLink message="Facing issues with your account?" />
         </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 };
 
 export default Login;
+
+
+
+
 
 
 

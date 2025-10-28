@@ -11,7 +11,7 @@ import { successResponse, errorResponse } from "../constants/response.js";
 import STATUS_CODES from "../constants/httpStatus.js";
 import sendEmail from "../utils/SendEmail.js";
 
-console.log("✅ authControllers file loaded");
+console.log(" authControllers file loaded");
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -181,4 +181,4 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-console.log("✅ authControllers loaded successfully");
+console.log(" authControllers loaded successfully");

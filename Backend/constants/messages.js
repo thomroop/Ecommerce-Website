@@ -6,16 +6,16 @@
 // @returns  Object containing message constants for server, user, and product operations
 
 const messages = {
-  // -----------------------------
-  // 🌐 Server messages
-  // -----------------------------
+ 
+  // Server messages
+ 
   SERVER_RUNNING: "Server running on port",
   SERVER_ERROR: "Something went wrong on the server",
   API_RUNNING: "API is running...",
 
-  // -----------------------------
-  // 👤 User-related messages
-  // -----------------------------
+  
+  //  User-related messages
+  
   USER_NOT_FOUND: "User not found",
   LOGIN_SUCCESS: "Login Successful",
   USER_CREATED: "User created successfully",
@@ -25,9 +25,9 @@ const messages = {
   UNAUTHORIZED: "Not authorized, token failed",
   FORBIDDEN: "Access denied",
 
-  // -----------------------------
-  // 🛒 Product-related messages
-  // -----------------------------
+ 
+  // Product-related messages
+  
   PRODUCT_ADDED: "Product added successfully",
   PRODUCT_FETCHED: "Product fetched successfully",
   PRODUCT_UPDATED: "Product updated successfully",

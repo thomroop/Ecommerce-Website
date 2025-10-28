@@ -3,6 +3,8 @@
 // @access  Private (requires authentication before initiating payment)
 
 import express from "express";
+import stripe from "stripe";
+import dotenv from "dotenv";
 import { createPaymentIntent } from "../controllers/stripeControllers.js";
 
 const router = express.Router();

@@ -20,7 +20,6 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Use fallback token if context isn't ready yet
         const authToken = token || localStorage.getItem("token");
 
         const [productsRes, ordersRes, usersRes] = await Promise.all([
@@ -33,7 +32,6 @@ const Dashboard = () => {
           }),
         ]);
 
-        // ✅ Match your backend structure — all APIs return { success, message, data: [...] }
         setStats({
           products: productsRes.data?.data?.length || 0,
           orders: ordersRes.data?.data?.length || 0,
@@ -51,7 +49,7 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="p-6 text-center text-gray-600 text-lg">
+      <div className="p-6 text-center text-slate-600 text-lg">
         Loading dashboard data...
       </div>
     );
@@ -61,13 +59,13 @@ const Dashboard = () => {
     <div className="p-4">
       {/* ✅ Dashboard Header */}
       <div className="flex items-center gap-3 mb-6">
-        <LayoutDashboard size={28} className="text-yellow-500" />
+        <LayoutDashboard size={28} className="text-teal-600" />
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">
+          <h1 className="text-3xl font-bold text-slate-800">
             Welcome,{" "}
-            <span className="text-yellow-600">{user?.name || "Admin"}</span> 👋
+            <span className="text-teal-700">{user?.name || "Admin"}</span> 🤝
           </h1>
-          <p className="text-gray-600 text-sm mt-1">
+          <p className="text-slate-600 text-sm mt-1">
             Here’s a quick overview of your store activity.
           </p>
         </div>
@@ -76,33 +74,33 @@ const Dashboard = () => {
       {/* ✅ Dashboard Summary Cards */}
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {/* Products */}
-        <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+        <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg border border-gray-100 transition">
           <div className="flex items-center gap-3 mb-2">
-            <Package className="text-green-600" size={22} />
-            <h2 className="font-semibold text-gray-700">Total Products</h2>
+            <Package className="text-teal-600" size={22} />
+            <h2 className="font-semibold text-slate-700">Total Products</h2>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{stats.products}</p>
-          <p className="text-sm text-gray-500 mt-1">Active in catalog</p>
+          <p className="text-3xl font-bold text-slate-900">{stats.products}</p>
+          <p className="text-sm text-slate-500 mt-1">Active in catalog</p>
         </div>
 
         {/* Orders */}
-        <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+        <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg border border-gray-100 transition">
           <div className="flex items-center gap-3 mb-2">
-            <ShoppingCart className="text-blue-600" size={22} />
-            <h2 className="font-semibold text-gray-700">Total Orders</h2>
+            <ShoppingCart className="text-slate-600" size={22} />
+            <h2 className="font-semibold text-slate-700">Total Orders</h2>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{stats.orders}</p>
-          <p className="text-sm text-gray-500 mt-1">Orders placed</p>
+          <p className="text-3xl font-bold text-slate-900">{stats.orders}</p>
+          <p className="text-sm text-slate-500 mt-1">Orders placed</p>
         </div>
 
         {/* Users */}
-        <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+        <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg border border-gray-100 transition">
           <div className="flex items-center gap-3 mb-2">
-            <Users className="text-purple-600" size={22} />
-            <h2 className="font-semibold text-gray-700">Total Users</h2>
+            <Users className="text-teal-700" size={22} />
+            <h2 className="font-semibold text-slate-700">Total Users</h2>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{stats.users}</p>
-          <p className="text-sm text-gray-500 mt-1">Registered customers</p>
+          <p className="text-3xl font-bold text-slate-900">{stats.users}</p>
+          <p className="text-sm text-slate-500 mt-1">Registered customers</p>
         </div>
       </div>
     </div>

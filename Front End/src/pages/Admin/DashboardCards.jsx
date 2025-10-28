@@ -17,10 +17,12 @@ const DashboardCards = () => {
       {stats.map((item, index) => (
         <div
           key={index}
-          className="bg-white shadow-md rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg transition"
+          className="bg-white shadow-md rounded-xl p-4 flex flex-col items-center justify-center border border-gray-100 hover:shadow-xl transition-all duration-300"
         >
-          <h2 className="text-lg font-semibold text-gray-700">{item.title}</h2>
-          <p className="text-2xl font-bold text-yellow-500 mt-2">
+          <h2 className="text-lg font-semibold text-slate-700">
+            {item.title}
+          </h2>
+          <p className="text-2xl font-bold bg-gradient-to-r from-teal-600 to-slate-600 bg-clip-text text-transparent mt-2">
             {item.value}
           </p>
         </div>

@@ -4,8 +4,9 @@
 
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { validateEmail, validatePassword } from "../../utils/validation"; // ✅ Import validation functions
+import { useNavigate, Link } from "react-router-dom";
+import { validateEmail, validatePassword } from "../../utils/validation";
+import PageWrapper from "../../components/common/PageWrapper";
 
 const Register = () => {
   const { register } = useContext(AuthContext);
@@ -29,19 +30,18 @@ const Register = () => {
     setError("");
     setSuccess("");
 
-    // ✅ Use imported validation functions
     if (!validateEmail(formData.email)) {
-      setError("Please enter a valid email address");
+      setError("Please enter a valid email address ❌");
       return;
     }
 
     if (!validatePassword(formData.password)) {
-      setError("Password must be at least 6 characters");
+      setError("Password must be at least 6 characters ❌");
       return;
     }
 
     if (!formData.phone.match(/^[0-9]{10}$/)) {
-      setError("Please enter a valid 10-digit phone number");
+      setError("Please enter a valid 10-digit phone number ❌");
       return;
     }
 
@@ -55,9 +55,9 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 shadow-xl rounded-2xl w-96 border border-gray-100">
-        <h2 className="text-3xl font-bold mb-4 text-center text-teal-700">
+    <PageWrapper>
+      <div className="bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl w-96 p-8 border border-gray-200">
+        <h2 className="text-3xl font-bold mb-6 text-center text-teal-700">
           Create an Account
         </h2>
 
@@ -68,8 +68,8 @@ const Register = () => {
             placeholder="Full Name"
             value={formData.name}
             onChange={handleChange}
-            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
             required
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 outline-none"
           />
           <input
             type="email"
@@ -77,8 +77,8 @@ const Register = () => {
             placeholder="Email Address"
             value={formData.email}
             onChange={handleChange}
-            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
             required
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 outline-none"
           />
           <input
             type="text"
@@ -86,8 +86,8 @@ const Register = () => {
             placeholder="Phone Number"
             value={formData.phone}
             onChange={handleChange}
-            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
             required
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 outline-none"
           />
           <input
             type="password"
@@ -95,11 +95,10 @@ const Register = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
             required
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 outline-none"
           />
 
-          {/* ✅ Updated button colors */}
           <button
             className="bg-gradient-to-r from-teal-600 to-slate-600 text-white py-2 rounded-lg hover:from-teal-700 hover:to-slate-700 transition-all font-semibold shadow-md"
             type="submit"
@@ -108,12 +107,24 @@ const Register = () => {
           </button>
         </form>
 
-        {/* ✅ Modern error/success colors */}
+        {/* ✅ Modern error/success messages */}
         {error && <p className="text-red-500 mt-3 text-center">{error}</p>}
         {success && <p className="text-teal-600 mt-3 text-center">{success}</p>}
+
+        {/* 🔗 Back to login */}
+        <p className="text-sm text-center mt-4 text-gray-600">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-teal-600 hover:underline font-medium"
+          >
+            Login
+          </Link>
+        </p>
       </div>
-    </div>
+    </PageWrapper>
   );
 };
 
 export default Register;
+

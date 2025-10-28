@@ -6,45 +6,45 @@ import React, { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 
-/**
- * ✅ Usage Examples:
- * 
- * 🔒 General (any logged-in user):
- *    <Route element={<ProtectedRoute />}>
- *       <Route path="/profile" element={<ProfilePage />} />
- *    </Route>
- * 
- * 👑 Admin-only access:
- *    <Route element={<ProtectedRoute requiredRole="Admin" />}>
- *       <Route path="/admin/*" element={<AdminPage />} />
- *    </Route>
- * 
- * 🛍️ User checkout (both User & Admin can access):
- *    <Route element={<ProtectedRoute requiredRole="User" />}>
- *       <Route path="/checkout" element={<CheckoutPage />} />
- *    </Route>
- */
-
 const ProtectedRoute = ({ requiredRole }) => {
-  const { user } = useContext(AuthContext);
+  const { user, token, loading } = useContext(AuthContext);
 
-  // 🧭 Case 1: User not logged in → redirect to login
-  if (!user) {
+  // ✅ Safe to log here (inside component after user is defined)
+  console.log("🧭 ProtectedRoute check:", {
+    user,
+    token,
+    loading,
+    role: user?.role,
+  });
+
+  // ⏳ Wait for AuthContext to finish checking profile
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50 text-teal-700 text-lg font-semibold">
+        Checking authorization...
+      </div>
+    );
+  }
+
+  // 🚫 Case 1: Not logged in → redirect to login
+  if (!user || !token) {
+    console.warn("🚫 Not logged in — redirecting to login");
     return <Navigate to="/login" replace />;
   }
 
   // 🚫 Case 2: Role mismatch → redirect to home
-  // Allow admin access for user routes (flexible)
   if (
     requiredRole &&
     ![requiredRole.toLowerCase(), "admin"].includes(user.role?.toLowerCase())
   ) {
+    console.warn("🚫 Role mismatch — redirecting to home");
     return <Navigate to="/" replace />;
   }
 
-  // ✅ Case 3: Authorized → show nested route content
+  // ✅ Case 3: Authorized → render nested content
   return <Outlet />;
 };
 
 export default ProtectedRoute;
+
 

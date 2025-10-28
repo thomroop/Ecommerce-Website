@@ -4,13 +4,13 @@
 
 import React, { useContext, useState } from "react";
 import { CartContext } from "../../context/Cartcontext";
-import BannerCarousel from "../../components/layout/BannerCarousel"; // ✅ Carousel for featured banners
+import BannerCarousel from "../../components/layout/BannerCarousel";
 
 const ProductList = () => {
   const { addToCart } = useContext(CartContext);
   const BASE_URL = "http://localhost:8080";
 
-  // ✅ Sample Products (Static data — replace with API later if needed)
+  // ✅ Full Product List (restored 40+ items)
   const products = [
     // AirPods
     { id: 1, name: "AirPods Pro", category: "AirPods", price: 249, image: `${BASE_URL}/uploads/airpods/images-1760281187698.webp` },
@@ -71,7 +71,6 @@ const ProductList = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // ✅ Filter products by selected category
   const filteredProducts =
     selectedCategory === "All"
       ? products
@@ -80,22 +79,22 @@ const ProductList = () => {
   const categories = ["All", ...new Set(products.map((p) => p.category))];
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4 text-yellow-600 text-center">
-        Product List
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <h2 className="text-3xl font-bold text-teal-700 mb-4 text-center">
+        Product Gallery
       </h2>
 
-      {/* ✅ Category Filter Bar */}
+      {/* ✅ Category Filter */}
       <div className="flex justify-center mb-6">
-        <div className="flex flex-wrap gap-3 bg-gray-100 p-3 rounded-full shadow-md">
+        <div className="flex flex-wrap gap-3 bg-white p-3 rounded-full shadow-md border border-gray-100">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-full font-semibold transition-colors ${
+              className={`px-4 py-2 rounded-full font-semibold transition-all duration-200 ${
                 selectedCategory === cat
-                  ? "bg-yellow-500 text-white"
-                  : "bg-white text-gray-700 hover:bg-yellow-200"
+                  ? "bg-gradient-to-r from-teal-600 to-slate-600 text-white shadow-md"
+                  : "bg-gray-100 text-gray-700 hover:bg-teal-100 hover:text-teal-700"
               }`}
             >
               {cat}
@@ -110,26 +109,28 @@ const ProductList = () => {
       </div>
 
       {/* ✅ Product Grid */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {filteredProducts.map((product) => (
           <div
             key={product.id}
-            className="bg-white shadow-md p-3 rounded-lg flex flex-col items-center"
+            className="bg-white shadow-md border border-gray-100 rounded-2xl p-4 flex flex-col items-center hover:shadow-xl transition-all duration-200"
           >
             <img
               src={product.image}
               alt={product.name}
-              className="w-full h-32 object-contain rounded-md mb-3"
+              className="w-full h-40 object-contain rounded-lg mb-3"
             />
-            <h3 className="text-md font-semibold text-center">{product.name}</h3>
-            <p className="text-gray-600 font-medium">
+            <h3 className="text-lg font-semibold text-slate-800 text-center">
+              {product.name}
+            </h3>
+            <p className="text-teal-700 font-medium mt-1">
               ₹{product.price.toLocaleString()}
             </p>
             <button
-              className="mt-2 px-4 py-1 bg-yellow-500 text-white rounded-lg hover:bg-orange-600 transition"
+              className="mt-3 px-5 py-2 bg-gradient-to-r from-teal-600 to-slate-600 text-white rounded-lg font-semibold shadow-md hover:from-teal-700 hover:to-slate-700 transition-all"
               onClick={() => addToCart(product)}
             >
-              Add to Cart
+              Add to Cart 🛒
             </button>
           </div>
         ))}
@@ -139,3 +140,5 @@ const ProductList = () => {
 };
 
 export default ProductList;
+
+

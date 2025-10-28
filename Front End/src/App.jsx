@@ -9,6 +9,10 @@ import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 import AdminLayout from "./pages/Admin/AdminLayout";
+import Footer from "./components/layout/Footer";
+import PrivacyPolicy from "./components/common/PrivacyPolicy";
+
+
 
 // ✅ USER PAGES
 import ProductList from "./pages/product/ProductList";
@@ -17,6 +21,9 @@ import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import CartPage from "./pages/cart/CartPage";
+import ContactPage from "./pages/Contact/ContactPage";
+
+
 
 // ✅ PAYMENT PAGES
 import CheckoutPage from "./pages/payment/CheckoutPage";
@@ -33,8 +40,11 @@ const UserLayout = () => (
   <>
     <Navbar />
     <Outlet />
+    <Footer />
   </>
 );
+
+
 
 const App = () => {
   return (
@@ -50,6 +60,10 @@ const App = () => {
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="reset-password" element={<ResetPassword />} />
           <Route path="cart" element={<CartPage />} />
+          <Route path="contact" element={<ContactPage />} />
+          <Route path="privacy" element={<PrivacyPolicy />} />
+
+
         </Route>
 
         {/* =======================

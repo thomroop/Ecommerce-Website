@@ -25,16 +25,21 @@ const AdminProducts = () => {
     fetchProducts();
   }, []);
 
-  if (loading) return <p>Loading products...</p>;
+  if (loading)
+    return (
+      <p className="text-center text-slate-600 font-medium">
+        Loading products...
+      </p>
+    );
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4 text-yellow-600">
+      <h1 className="text-2xl font-bold mb-4 text-teal-700">
         Product Management
       </h1>
 
-      <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-        <thead className="bg-gray-200">
+      <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden border border-gray-100">
+        <thead className="bg-gradient-to-r from-teal-600 to-slate-600 text-white">
           <tr>
             <th className="p-3 text-left">Name</th>
             <th className="p-3 text-left">Category</th>
@@ -45,15 +50,20 @@ const AdminProducts = () => {
         <tbody>
           {products.length > 0 ? (
             products.map((p) => (
-              <tr key={p._id} className="border-t">
-                <td className="p-3">{p.name}</td>
-                <td className="p-3">{p.category}</td>
-                <td className="p-3">₹{p.price}</td>
+              <tr
+                key={p._id}
+                className="border-t hover:bg-teal-50 transition-all duration-200"
+              >
+                <td className="p-3 text-slate-800 font-medium">{p.name}</td>
+                <td className="p-3 text-slate-700">{p.category}</td>
+                <td className="p-3 text-slate-800 font-semibold">
+                  ₹{p.price}
+                </td>
                 <td className="p-3">
-                  <button className="bg-blue-500 text-white px-3 py-1 rounded mr-2">
+                  <button className="bg-gradient-to-r from-teal-600 to-slate-600 text-white px-3 py-1 rounded-lg shadow hover:from-teal-700 hover:to-slate-700 transition-all mr-2">
                     Edit
                   </button>
-                  <button className="bg-red-500 text-white px-3 py-1 rounded">
+                  <button className="bg-red-500 text-white px-3 py-1 rounded-lg shadow hover:bg-red-600 transition-all">
                     Delete
                   </button>
                 </td>
@@ -61,7 +71,7 @@ const AdminProducts = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="4" className="text-center p-4 text-gray-500">
+              <td colSpan="4" className="text-center p-4 text-slate-500">
                 No products found.
               </td>
             </tr>

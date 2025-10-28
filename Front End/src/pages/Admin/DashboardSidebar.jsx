@@ -24,21 +24,20 @@ const DashboardSidebar = () => {
       icon: Package,
       link: "/admin/products",
       hasSubmenu: true,
-      submenu: [
-        // ✅ Fixed: Only keep the correct working link
-        { name: "Manage Products", link: "/admin/products" },
-      ],
+      submenu: [{ name: "Manage Products", link: "/admin/products" }],
     },
     { name: "Orders", icon: ShoppingCart, link: "/admin/orders" },
     { name: "Users", icon: Users, link: "/admin/users" },
   ];
 
   return (
-    <aside className="bg-gray-900 text-white w-64 min-h-screen p-4 shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center text-yellow-400">
-        Admin Panel
+    <aside className="bg-gradient-to-b from-teal-700 to-slate-700 text-white w-64 min-h-screen p-4 shadow-lg">
+      {/* ✅ Sidebar Title */}
+      <h2 className="text-2xl font-bold mb-6 text-center text-white tracking-wide">
+        
       </h2>
 
+      {/* ✅ Navigation Links */}
       <nav className="space-y-2">
         {menuItems.map((item) => {
           const isActive =
@@ -52,10 +51,10 @@ const DashboardSidebar = () => {
               <div key={item.name}>
                 <button
                   onClick={() => setOpenSubmenu((prev) => !prev)}
-                  className={`flex items-center justify-between w-full px-3 py-2 rounded-md transition-all ${
+                  className={`flex items-center justify-between w-full px-3 py-2 rounded-md transition-all duration-200 ${
                     isActive
-                      ? "bg-yellow-500 text-black font-semibold"
-                      : "hover:bg-gray-800"
+                      ? "bg-gradient-to-r from-teal-500 to-slate-500 text-white font-semibold shadow-md"
+                      : "hover:bg-teal-600 hover:shadow-sm"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -75,10 +74,10 @@ const DashboardSidebar = () => {
                       <Link
                         key={sub.name}
                         to={sub.link}
-                        className={`block px-3 py-2 text-sm rounded-md transition-all ${
+                        className={`block px-3 py-2 text-sm rounded-md transition-all duration-200 ${
                           location.pathname === sub.link
-                            ? "bg-yellow-400 text-black font-medium"
-                            : "hover:bg-gray-800"
+                            ? "bg-gradient-to-r from-teal-400 to-slate-400 text-white font-medium"
+                            : "hover:bg-teal-600"
                         }`}
                       >
                         {sub.name}
@@ -95,10 +94,10 @@ const DashboardSidebar = () => {
             <Link
               key={item.name}
               to={item.link}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-all ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 ${
                 isActive
-                  ? "bg-yellow-500 text-black font-semibold"
-                  : "hover:bg-gray-800"
+                  ? "bg-gradient-to-r from-teal-500 to-slate-500 text-white font-semibold shadow-md"
+                  : "hover:bg-teal-600 hover:shadow-sm"
               }`}
             >
               <item.icon size={18} />

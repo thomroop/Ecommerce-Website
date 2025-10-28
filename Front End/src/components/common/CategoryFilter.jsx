@@ -2,7 +2,6 @@
 // @route   Frontend Component
 // @access  Public
 
-// src/components/CategoryFilter.jsx
 import React from "react";
 
 const categories = [
@@ -19,16 +18,17 @@ const categories = [
 
 const CategoryFilter = ({ selectedCategory, onSelectCategory }) => {
   return (
-    <div className="flex justify-center mb-4">
-      <div className="flex flex-wrap gap-2 bg-gray-100 p-2 rounded-full shadow-sm">
+    <div className="flex justify-center mb-6">
+      {/* ✅ Matches ProductList filter bar style */}
+      <div className="flex flex-wrap justify-center gap-3 bg-white p-3 rounded-full shadow-md border border-gray-100 max-w-5xl w-full">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => onSelectCategory(cat)}
-            className={`px-4 py-1 rounded-full font-semibold transition-colors ${
+            className={`px-4 py-2 rounded-full font-semibold transition-all duration-200 ${
               selectedCategory === cat
-                ? "bg-yellow-500 text-white"
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-yellow-200"
+                ? "bg-gradient-to-r from-teal-600 to-slate-600 text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-teal-100 hover:text-teal-700"
             }`}
           >
             {cat}
@@ -40,4 +40,9 @@ const CategoryFilter = ({ selectedCategory, onSelectCategory }) => {
 };
 
 export default CategoryFilter;
+
+
+
+
+
 

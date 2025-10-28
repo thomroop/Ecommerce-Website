@@ -4,7 +4,9 @@
 
 import React, { useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify"; // ✅ Import toast
+import { toast } from "react-toastify";
+import PageWrapper from "../../components/common/PageWrapper"; // ✅ For consistent gradient background
+import { Link } from "react-router-dom";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
@@ -17,23 +19,27 @@ const ResetPassword = () => {
     setLoading(true);
 
     try {
-      // ✅ Use environment variable for dynamic URL
       const res = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}reset-password`,
         { email, otp, newPassword }
       );
 
-      // ✅ Success toast
-      toast.success(res.data.message || "Password reset successful! 🔐");
+      toast.success(res.data.message || "Password reset successful! 🔐", {
+        position: "top-center",
+        autoClose: 3000,
+      });
 
-      // Optional: clear inputs
+      // Clear fields after success
       setEmail("");
       setOtp("");
       setNewPassword("");
     } catch (err) {
-      // ✅ Error toast
       toast.error(
-        err.response?.data?.message || "Invalid OTP or email. Try again. ❌"
+        err.response?.data?.message || "Invalid OTP or email. Try again. ❌",
+        {
+          position: "top-center",
+          autoClose: 3000,
+        }
       );
     } finally {
       setLoading(false);
@@ -41,51 +47,65 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-96">
-        <h2 className="text-2xl font-semibold text-center mb-4">
-          Reset Password
+    <PageWrapper>
+      <div className="bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl w-96 p-8 border border-gray-200">
+        <h2 className="text-3xl font-bold mb-6 text-center text-teal-700">
+          Reset Password 🔐
         </h2>
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="email"
             placeholder="Enter your registered email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 outline-none"
           />
+
           <input
             type="text"
             placeholder="Enter OTP"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
             required
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 outline-none"
           />
+
           <input
             type="password"
             placeholder="Enter new password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             required
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-teal-500 outline-none"
           />
+
           <button
             type="submit"
             disabled={loading}
-            className={`text-white py-2 rounded-lg transition ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-600 hover:bg-green-700"
+            className={`bg-gradient-to-r from-teal-600 to-slate-600 text-white py-2 rounded-lg font-semibold shadow-md hover:from-teal-700 hover:to-slate-700 transition-all ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
             }`}
           >
             {loading ? "Resetting..." : "Reset Password"}
           </button>
         </form>
+
+        {/* 🔗 Back to login link for easy navigation */}
+        <div className="text-center mt-4 text-sm">
+          <Link
+            to="/login"
+            className="text-teal-600 hover:underline font-medium"
+          >
+            Back to Login
+          </Link>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 };
 
 export default ResetPassword;
+
+
