@@ -8,23 +8,27 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { validateEmail, validatePassword } from "../../utils/validation";
-import PageWrapper from "../../components/common/PageWrapper"; // ✅ Background wrapper
-import SupportLink from "../../components/common/SupportLink"; // ✅ Reusable Support link
+import PageWrapper from "../../components/common/PageWrapper";
+import SupportLink from "../../components/common/SupportLink";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
+  // ✅ Handle input changes
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  // ✅ Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    if (!validateEmail(formData.email)) {
+    // ✅ Email validation
+    if (!formData.email || !validateEmail(formData.email)) {
       toast.error("Please enter a valid email address ❌", {
         position: "top-center",
         autoClose: 2000,
@@ -33,7 +37,8 @@ const Login = () => {
       return;
     }
 
-    if (!validatePassword(formData.password)) {
+    // ✅ Password validation
+    if (!formData.password || !validatePassword(formData.password)) {
       toast.error("Password must be at least 6 characters ❌", {
         position: "top-center",
         autoClose: 2000,
@@ -42,15 +47,19 @@ const Login = () => {
       return;
     }
 
+    // ✅ Try login
     try {
       const userData = await login(formData);
+
       toast.success(`Welcome back, ${userData.name || "User"}! 🎉`, {
         position: "top-center",
         autoClose: 2000,
       });
 
+      // ✅ Role-based navigation
       if (userData.role?.toLowerCase() === "admin") navigate("/admin");
       else navigate("/");
+
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Invalid email or password ❌",
@@ -64,6 +73,7 @@ const Login = () => {
     }
   };
 
+  // ✅ Render UI
   return (
     <PageWrapper>
       <div className="bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl w-96 p-8 border border-gray-200">
@@ -129,6 +139,7 @@ const Login = () => {
 };
 
 export default Login;
+
 
 
 

@@ -5,7 +5,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { validateEmail, validatePassword } from "../../utils/validation";
+import { validateEmail, validatePassword, validatePhone } from "../../utils/validation";
 import PageWrapper from "../../components/common/PageWrapper";
 
 const Register = () => {
@@ -21,26 +21,37 @@ const Register = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // ✅ Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // ✅ Handle form submission with safe validation
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    if (!validateEmail(formData.email)) {
+    // ✅ Basic name check
+    if (!formData.name.trim()) {
+      setError("Please enter your full name ❌");
+      return;
+    }
+
+    // ✅ Email validation
+    if (!formData.email || !validateEmail(formData.email)) {
       setError("Please enter a valid email address ❌");
       return;
     }
 
-    if (!validatePassword(formData.password)) {
+    // ✅ Password validation
+    if (!formData.password || !validatePassword(formData.password)) {
       setError("Password must be at least 6 characters ❌");
       return;
     }
 
-    if (!formData.phone.match(/^[0-9]{10}$/)) {
+    // ✅ Phone validation (safe check)
+    if (!formData.phone || !validatePhone(formData.phone)) {
       setError("Please enter a valid 10-digit phone number ❌");
       return;
     }

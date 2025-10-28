@@ -1,7 +1,19 @@
-// @desc    Validation Utility - Common reusable functions for form validation
-// @route   Frontend Utility
+// @desc    Validation Utilities - Contains reusable functions for form validation
+// @route   Frontend Utility File
 // @access  Public
 
-export const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
+// ✅ Email validation (safe and clean)
+export const validateEmail = (email) => {
+  // Check that email exists and follows basic pattern
+  return email && /^\S+@\S+\.\S+$/.test(email);
+};
 
-export const validatePassword = (password) => password.length >= 6;
+// ✅ Password validation (minimum 6 characters)
+export const validatePassword = (password) => {
+  return password && password.length >= 6;
+};
+
+// ✅ Optional phone validation (if used elsewhere)
+export const validatePhone = (phone) => {
+  return phone && /^[0-9]{10}$/.test(phone);
+};
