@@ -71,7 +71,7 @@ app.use("/api/cart", protect, cartRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/stripe", stripeRoutes); // ✅ Stripe route
-app.use("/api/auth", contactRoutes);
+app.use("/api/contact", contactRoutes);
 // ------------------------------
 // ✅ 404 Handler
 // ------------------------------
