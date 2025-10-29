@@ -3,7 +3,7 @@ import { submitContactForm } from "../controllers/contactControllers.js";
 
 const router = express.Router();
 
-// ✅ POST route to handle contact form submission
-router.post("/contact", submitContactForm);
+// ✅ Correct route (only "/") — since app.js already mounts at /api/contact
+router.post("/", submitContactForm);
 
 export default router;
