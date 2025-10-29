@@ -8,7 +8,11 @@ import BannerCarousel from "../../components/layout/BannerCarousel";
 
 const ProductList = () => {
   const { addToCart } = useContext(CartContext);
-  const BASE_URL = "http://localhost:8080";
+  const BASE_URL = 
+  import.meta.env.MODE === "development"
+    ? "http://localhost:8080"
+    : "https://ecommerce-website-1-h99k.onrender.com";
+
 
   // ✅ Full Product List (restored 40+ items)
   const products = [
