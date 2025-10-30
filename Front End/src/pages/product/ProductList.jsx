@@ -55,11 +55,11 @@ const ProductList = () => {
     { id: 30, name: "Intel i5-13600K", category: "Processors", price: 2799, image: `${BASE_URL}/uploads/processors/images-1760284268950.webp` },
 
     // TVs
-    { id: 31, name: "Samsung QN90B", category: "TVs", price: 149900, image: `${BASE_URL}/uploads/tv's/images-1760284268951.webp` },
-    { id: 32, name: "LG C2 OLED", category: "TVs", price: 17099, image: `${BASE_URL}/uploads/tv's/images-1760284268952.webp` },
-    { id: 33, name: "Sony Bravia X90J", category: "TVs", price: 12969, image: `${BASE_URL}/uploads/tv's/images-1760284301341.webp` },
-    { id: 34, name: "TCL 6-Series", category: "TVs", price: 8909, image: `${BASE_URL}/uploads/tv's/images-1760284268951.webp` },
-    { id: 35, name: "Panasonic HX940", category: "TVs", price: 9990, image: `${BASE_URL}/uploads/tv's/images-1760284301341.webp` },
+    { id: 31, name: "Samsung QN90B", category: "TVs", price: 149900, image: `${BASE_URL}/uploads/tvs/images-1760284268951.webp` },
+    { id: 32, name: "LG C2 OLED", category: "TVs", price: 17099, image: `${BASE_URL}/uploads/tvs/images-1760284268952.webp` },
+    { id: 33, name: "Sony Bravia X90J", category: "TVs", price: 12969, image: `${BASE_URL}/uploads/tvs/images-1760284301341.webp` },
+    { id: 34, name: "TCL 6-Series", category: "TVs", price: 8909, image: `${BASE_URL}/uploads/tvs/images-1760284268951.webp` },
+    { id: 35, name: "Panasonic HX940", category: "TVs", price: 9990, image: `${BASE_URL}/uploads/tvs/images-1760284301341.webp` },
 
     // Watches
     { id: 36, name: "Apple Watch Series 9", category: "Watches", price: 2000, image: `${BASE_URL}/uploads/watches/images-1760284197216.webp` },
