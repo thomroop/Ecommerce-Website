@@ -21,17 +21,15 @@ import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
 
-// ------------------------------
+
 // ✅ Setup __dirname for ES Modules
-// ------------------------------
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-
-// ------------------------------
 // ✅ Enable CORS (Allow Public Access)
-// ------------------------------
+
 app.use(
   cors({
     origin: "*",
