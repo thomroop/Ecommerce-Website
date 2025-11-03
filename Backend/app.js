@@ -27,28 +27,14 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
+
 // ------------------------------
-// ✅ Enable CORS
-// ------------------------------
-// ------------------------------
-// ✅ Enable Dynamic CORS for Vercel + Localhost
+// ✅ Enable CORS (Allow Public Access)
 // ------------------------------
 app.use(
   cors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        "http://localhost:5173", // local dev
-        "https://ecommerce-website-roopa.vercel.app", // your main production domain
-      ];
-
-      // ✅ Allow all Vercel preview deployments automatically
-      if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
-        callback(null, true);
-      } else {
-        console.warn("🚫 Blocked by CORS:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,

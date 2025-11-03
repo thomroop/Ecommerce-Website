@@ -22,6 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-Uploads/
+# uploads folder placeholder
+# uploads/
 package-lock.json
 .env
