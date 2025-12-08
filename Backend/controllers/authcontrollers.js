@@ -32,12 +32,20 @@ export const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // 🔄 NEW ROLE LOGIC — ADMIN AUTO ASSIGN
+    let role = "User";
+    if (req.body.role) {
+      role = req.body.role;
+    } else if (email === "admin@rediff.com") {
+      role = "admin";     // <-- THIS makes your admin user have admin role
+    }
+
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
       phone,
-      role: req.body.role || "User",
+      role,  // <-- using computed role
     });
 
     const { password: _, ...userWithoutPassword } = user._doc;
@@ -182,3 +190,4 @@ export const getUserProfile = async (req, res) => {
 };
 
 console.log(" authControllers loaded successfully");
+
