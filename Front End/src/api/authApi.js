@@ -5,47 +5,57 @@
 // ✅ src/api/authApi.js
 import axios from "axios";
 
-// Base API URL from environment variable
-const API_URL = import.meta.env.VITE_API_BASE_URL;
+// -------------------------
+// 🌐 Base API URL (sanitized)
+// -------------------------
+const rawApiUrl = import.meta.env.VITE_API_BASE_URL || "";
+// 🔧 remove ONE trailing slash if present: "…/api/" -> "…/api"
+const API_URL = rawApiUrl.replace(/\/$/, "");
+
+// (Optional) Debug logs – help you confirm at runtime
+console.log("🔗 rawApiUrl:", rawApiUrl);
+console.log("✅ API_URL used:", API_URL);
 
 // -------------------------
-// 📝 Register User
+//  Register User
 // -------------------------
 export const registerUser = async (userData) => {
   try {
-    // Correct endpoint → /api/auth/register
+    // Final endpoint → .../api/auth/register
     const response = await axios.post(`${API_URL}/auth/register`, userData);
     return response.data;
   } catch (error) {
-    // Safe error handling
+    console.error("❌ Registration error:", error.response?.data || error.message);
     throw error.response ? error.response.data : { message: "Server error" };
   }
 };
 
 // -------------------------
-// 🔑 Login User
+//  Login User
 // -------------------------
 export const loginUser = async (userData) => {
   try {
-    // Correct endpoint → /api/auth/login
+    // Final endpoint → .../api/auth/login
     const response = await axios.post(`${API_URL}/auth/login`, userData);
     return response.data;
   } catch (error) {
+    console.error("❌ Login error:", error.response?.data || error.message);
     throw error.response ? error.response.data : { message: "Server error" };
   }
 };
 
 // -------------------------
-// 👤 Get Profile (Protected)
+// Get Profile (Protected)
 // -------------------------
 export const getProfile = async (token) => {
   try {
-    // Correct endpoint → /api/auth/profile
+    // Final endpoint → .../api/auth/profile
     const response = await axios.get(`${API_URL}/auth/profile`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   } catch (error) {
+    console.error("❌ Profile error:", error.response?.data || error.message);
     throw error.response ? error.response.data : { message: "Server error" };
   }
 };
