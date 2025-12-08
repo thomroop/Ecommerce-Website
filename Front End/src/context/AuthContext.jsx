@@ -28,10 +28,20 @@ const AuthProvider = ({ children }) => {
         console.log("📡 Profile API raw response:", res);
 
         // ✅ Extract correct user data (backend wraps data under 'data')
-        const userData = res.data || res.user || res;
+        const rawUser = res.data || res.user || res; // 🔄 renamed
 
-        if (userData) {
-          if (!userData.role) userData.role = "User"; // Default role
+        if (rawUser) {
+          // 🔄 NEW: derive role from rawUser / isAdmin
+          const role =
+            rawUser.role ||
+            (typeof rawUser.isAdmin === "boolean"
+              ? rawUser.isAdmin
+                ? "admin"
+                : "user"
+              : "user");
+
+          const userData = { ...rawUser, role: role.toLowerCase() };
+
           setUser(userData);
           localStorage.setItem("user", JSON.stringify(userData));
           console.log("✅ Profile restored successfully:", userData);
@@ -56,11 +66,20 @@ const AuthProvider = ({ children }) => {
     try {
       const res = await loginUser(data);
       const token = res.token || res.data?.token;
-      const userData = res.user || res.data?.user || res.data;
+      const rawUser = res.user || res.data?.user || res.data; // 🔄 renamed
 
       if (!token) throw new Error("Token missing from server response");
 
-      if (!userData.role) userData.role = "User"; // Default role
+      // 🔄 NEW: derive role from rawUser / isAdmin
+      const role =
+        rawUser.role ||
+        (typeof rawUser.isAdmin === "boolean"
+          ? rawUser.isAdmin
+            ? "admin"
+            : "user"
+          : "user");
+
+      const userData = { ...rawUser, role: role.toLowerCase() };
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(userData));
@@ -106,7 +125,6 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
-
 
 
 
