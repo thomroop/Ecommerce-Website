@@ -13,45 +13,49 @@ import {
 
 import { protect } from "../middleware/authMiddleware.js"; // ✅ Middleware to verify JWT token
 
+// This will show in your Render logs when the file is loaded
 console.log("✅ authRoutes loaded successfully");
 
 const router = express.Router();
 
-/**
- * @desc    Register a new user
- * @route   POST /api/auth/register
- * @access  Public
- */
+// -------------------------
+// 🔍 Debug Route
+// -------------------------
+// URL: GET /api/auth/debug
+router.get("/debug", (req, res) => {
+  console.log("🔍 /api/auth/debug hit");
+  res.json({ message: "Auth routes are working" });
+});
+
+// -------------------------
+// 📝 Register User
+// -------------------------
+// URL: POST /api/auth/register
 router.post("/register", registerUser);
 
-/**
- * @desc    Login user and return JWT token
- * @route   POST /api/auth/login
- * @access  Public
- */
+// -------------------------
+// 🔑 Login User
+// -------------------------
+// URL: POST /api/auth/login
 router.post("/login", loginUser);
 
-/**
- * @desc    Send OTP to user's registered email for password reset
- * @route   POST /api/auth/forgot-password
- * @access  Public
- */
+// -------------------------
+// 🔁 Forgot Password (Send OTP)
+// -------------------------
+// URL: POST /api/auth/forgot-password
 router.post("/forgot-password", forgotPassword);
 
-/**
- * @desc    Reset user password using OTP
- * @route   POST /api/auth/reset-password
- * @access  Public
- */
+// -------------------------
+// 🔁 Reset Password Using OTP
+// -------------------------
+// URL: POST /api/auth/reset-password
 router.post("/reset-password", resetPassword);
 
-/**
- * @desc    Get logged-in user's profile
- * @route   GET /api/auth/profile
- * @access  Private (requires valid JWT token)
- */
+// -------------------------
+// 👤 Get Logged-in User Profile
+// -------------------------
+// URL: GET /api/auth/profile
+// Access: Private (JWT required)
 router.get("/profile", protect, getUserProfile);
 
 export default router;
-
-
