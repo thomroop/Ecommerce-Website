@@ -26,6 +26,11 @@ const Navbar = () => {
 
   const isAuthenticated = !!user;
 
+  // ✅ Safely normalize role and detect admin
+  const userRole =
+    typeof user?.role === "string" ? user.role.toLowerCase() : "";
+  const isAdmin = isAuthenticated && userRole === "admin";
+
   return (
     <nav className="bg-gradient-to-r from-teal-600 to-slate-700 text-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between">
@@ -82,8 +87,8 @@ const Navbar = () => {
             <AiOutlineShoppingCart /> Cart
           </NavLink>
 
-          {/* ⚙️ Admin Panel */}
-          {isAuthenticated && user?.role?. toLowerCase() === "Admin" && (
+          {/* ⚙️ Admin Panel (only for admins) */}
+          {isAdmin && (
             <NavLink
               to="/admin"
               className={({ isActive }) =>
@@ -131,5 +136,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-
