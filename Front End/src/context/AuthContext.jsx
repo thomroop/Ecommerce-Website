@@ -40,7 +40,7 @@ const AuthProvider = ({ children }) => {
                 : "user"
               : "user");
 
-          const userData = { ...rawUser, role: role.toLowerCase() };
+          const userData = { ...rawUser, role: role};
 
           setUser(userData);
           localStorage.setItem("user", JSON.stringify(userData));
