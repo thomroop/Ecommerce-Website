@@ -21,31 +21,34 @@ export const registerUser = async (req, res) => {
     const { name, email, password, phone } = req.body;
 
     if (!name || !email || !password || !phone) {
-      return errorResponse(res, STATUS_CODES.BAD_REQUEST, "All fields are required");
+      return errorResponse(
+        res,
+        STATUS_CODES.BAD_REQUEST,
+        "All fields are required"
+      );
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return errorResponse(res, STATUS_CODES.BAD_REQUEST, responseMessages.USER_EXISTS);
+      return errorResponse(
+        res,
+        STATUS_CODES.BAD_REQUEST,
+        responseMessages.USER_EXISTS
+      );
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // 🔄 NEW ROLE LOGIC — ADMIN AUTO ASSIGN
-    let role = "User";
-    if (req.body.role) {
-      role = req.body.role;
-    } else if (email === "admin@rediff.com") {
-      role = "admin";     // <-- THIS makes your admin user have admin role
-    }
+    // ✅ ROLE LOGIC – no hard-coded email, matches enum ("User" / "Admin")
+    const role = req.body.role || "User";
 
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
       phone,
-      role,  // <-- using computed role
+      role, // use computed role
     });
 
     const { password: _, ...userWithoutPassword } = user._doc;
@@ -57,7 +60,11 @@ export const registerUser = async (req, res) => {
       STATUS_CODES.CREATED
     );
   } catch (error) {
-    return errorResponse(res, STATUS_CODES.INTERNAL_SERVER_ERROR, error.message);
+    return errorResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER_ERROR,
+      error.message
+    );
   }
 };
 
@@ -69,17 +76,29 @@ export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return errorResponse(res, STATUS_CODES.BAD_REQUEST, "Email and password are required");
+      return errorResponse(
+        res,
+        STATUS_CODES.BAD_REQUEST,
+        "Email and password are required"
+      );
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return errorResponse(res, STATUS_CODES.NOT_FOUND, responseMessages.USER_NOT_FOUND);
+      return errorResponse(
+        res,
+        STATUS_CODES.NOT_FOUND,
+        responseMessages.USER_NOT_FOUND
+      );
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return errorResponse(res, STATUS_CODES.BAD_REQUEST, responseMessages.INVALID_CREDENTIALS);
+      return errorResponse(
+        res,
+        STATUS_CODES.BAD_REQUEST,
+        responseMessages.INVALID_CREDENTIALS
+      );
     }
 
     const token = jwt.sign(
@@ -96,7 +115,11 @@ export const loginUser = async (req, res) => {
       responseMessages.LOGIN_SUCCESS
     );
   } catch (error) {
-    return errorResponse(res, STATUS_CODES.INTERNAL_SERVER_ERROR, error.message);
+    return errorResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER_ERROR,
+      error.message
+    );
   }
 };
 
@@ -108,12 +131,20 @@ export const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-      return errorResponse(res, STATUS_CODES.BAD_REQUEST, "Email is required");
+      return errorResponse(
+        res,
+        STATUS_CODES.BAD_REQUEST,
+        "Email is required"
+      );
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return errorResponse(res, STATUS_CODES.NOT_FOUND, "User not found");
+      return errorResponse(
+        res,
+        STATUS_CODES.NOT_FOUND,
+        "User not found"
+      );
     }
 
     // Generate 6-digit OTP (valid for 10 minutes)
@@ -133,9 +164,17 @@ export const forgotPassword = async (req, res) => {
 
     await sendEmail(user.email, "Password Reset OTP", message);
 
-    return successResponse(res, {}, "OTP sent to your registered email address");
+    return successResponse(
+      res,
+      {},
+      "OTP sent to your registered email address"
+    );
   } catch (error) {
-    return errorResponse(res, STATUS_CODES.INTERNAL_SERVER_ERROR, error.message);
+    return errorResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER_ERROR,
+      error.message
+    );
   }
 };
 
@@ -147,7 +186,11 @@ export const resetPassword = async (req, res) => {
     const { email, otp, newPassword } = req.body;
 
     if (!email || !otp || !newPassword) {
-      return errorResponse(res, STATUS_CODES.BAD_REQUEST, "All fields are required");
+      return errorResponse(
+        res,
+        STATUS_CODES.BAD_REQUEST,
+        "All fields are required"
+      );
     }
 
     const user = await User.findOne({
@@ -157,7 +200,11 @@ export const resetPassword = async (req, res) => {
     });
 
     if (!user) {
-      return errorResponse(res, STATUS_CODES.BAD_REQUEST, "Invalid or expired OTP");
+      return errorResponse(
+        res,
+        STATUS_CODES.BAD_REQUEST,
+        "Invalid or expired OTP"
+      );
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -168,7 +215,11 @@ export const resetPassword = async (req, res) => {
 
     return successResponse(res, {}, "Password reset successfully");
   } catch (error) {
-    return errorResponse(res, STATUS_CODES.INTERNAL_SERVER_ERROR, error.message);
+    return errorResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER_ERROR,
+      error.message
+    );
   }
 };
 
@@ -180,14 +231,28 @@ export const getUserProfile = async (req, res) => {
     const user = await User.findById(req.user.id).select("-password");
 
     if (!user) {
-      return errorResponse(res, STATUS_CODES.NOT_FOUND, "User not found");
+      return errorResponse(
+        res,
+        STATUS_CODES.NOT_FOUND,
+        "User not found"
+      );
     }
 
-    return successResponse(res, user, "User profile fetched successfully", STATUS_CODES.OK);
+    return successResponse(
+      res,
+      user,
+      "User profile fetched successfully",
+      STATUS_CODES.OK
+    );
   } catch (error) {
-    return errorResponse(res, STATUS_CODES.INTERNAL_SERVER_ERROR, error.message);
+    return errorResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER_ERROR,
+      error.message
+    );
   }
 };
 
 console.log(" authControllers loaded successfully");
+
 
