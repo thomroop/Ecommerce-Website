@@ -83,7 +83,7 @@ const Navbar = () => {
           </NavLink>
 
           {/* ⚙️ Admin Panel */}
-          {isAuthenticated && user?.role === "Admin" && (
+          {isAuthenticated && user?.role?. toLowercase() === "Admin" && (
             <NavLink
               to="/admin"
               className={({ isActive }) =>
