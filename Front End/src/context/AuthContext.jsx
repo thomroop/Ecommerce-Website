@@ -8,14 +8,14 @@ import { loginUser, registerUser, getProfile } from "../api/authApi";
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  // ✅ Restore token & user from localStorage immediately
+  // Restore token & user from localStorage
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")) || null
   );
-  const [loading, setLoading] = useState(true); // Track authentication loading state
+  const [loading, setLoading] = useState(true);
 
-  // ✅ Auto-fetch profile if token exists (on refresh or first load)
+  // Auto-fetch profile if token exists
   useEffect(() => {
     const fetchProfile = async () => {
       if (!token) {
@@ -27,26 +27,15 @@ const AuthProvider = ({ children }) => {
         const res = await getProfile(token);
         console.log("📡 Profile API raw response:", res);
 
-        // ✅ Extract correct user data (backend wraps data under 'data')
-        const rawUser = res.data || res.user || res; // 🔄 renamed
+        const rawUser = res.data || res.user || res;
 
         if (rawUser) {
-          // 🔄 NEW: derive role from rawUser / isAdmin
-          const role =
-            rawUser.role ||
-            (typeof rawUser.isAdmin === "boolean"
-              ? rawUser.isAdmin
-                ? "admin"
-                : "user"
-              : "user");
-
-          const userData = { ...rawUser, role: role};
-
+          const userData = { ...rawUser }; // ← keep role exactly as backend sends
           setUser(userData);
           localStorage.setItem("user", JSON.stringify(userData));
-          console.log("✅ Profile restored successfully:", userData);
+          console.log("✅ Profile restored:", userData);
         } else {
-          console.warn("⚠️ No user data found in profile response.");
+          console.warn("⚠️ No user data in profile");
           logout();
         }
       } catch (err) {
@@ -57,29 +46,20 @@ const AuthProvider = ({ children }) => {
       }
     };
 
-    if (token) fetchProfile();
-    else setLoading(false);
+    fetchProfile();
   }, [token]);
 
-  // ✅ LOGIN FUNCTION
+  // LOGIN FUNCTION
   const login = async (data) => {
     try {
       const res = await loginUser(data);
       const token = res.token || res.data?.token;
-      const rawUser = res.user || res.data?.user || res.data; // 🔄 renamed
+      const rawUser = res.user || res.data?.user || res.data;
 
       if (!token) throw new Error("Token missing from server response");
 
-      // 🔄 NEW: derive role from rawUser / isAdmin
-      const role =
-        rawUser.role ||
-        (typeof rawUser.isAdmin === "boolean"
-          ? rawUser.isAdmin
-            ? "admin"
-            : "user"
-          : "user");
-
-      const userData = { ...rawUser, role: role.toLowerCase() };
+      // Keep backend role exactly: "Admin" or "User"
+      const userData = { ...rawUser };
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(userData));
@@ -94,7 +74,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ REGISTER FUNCTION
+  // REGISTER FUNCTION
   const register = async (data) => {
     try {
       const res = await registerUser(data);
@@ -106,7 +86,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ LOGOUT FUNCTION
+  // LOGOUT FUNCTION
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
