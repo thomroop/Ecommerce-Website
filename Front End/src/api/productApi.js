@@ -4,7 +4,7 @@
 
 import axios from "axios";
 
-const API = axios.create({ baseURL: "http://localhost:8080/api" });
+const API = axios.create({ baseURL: "https://ecommerce-website-1-h99k.onrender.com/api" });
 
 // Get all products
 export const getProducts = () => API.get("/products");
