@@ -7,6 +7,9 @@ import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 import { LayoutDashboard, Package, ShoppingCart, Users } from "lucide-react";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
+// Example in .env: VITE_API_BASE_URL="https://ecommerce-website-1-h99k.onrender.com/api"
+
 const Dashboard = () => {
   const { user, token } = useContext(AuthContext);
   const [stats, setStats] = useState({
@@ -16,6 +19,17 @@ const Dashboard = () => {
   });
   const [loading, setLoading] = useState(true);
 
+  // Helper to extract count from various response shapes
+  const extractCount = (res) => {
+    if (!res) return 0;
+    const d = res.data;
+    if (Array.isArray(d)) return d.length;
+    if (Array.isArray(d?.data)) return d.data.length;
+    if (typeof d?.length === "number") return d.length;
+    if (typeof res.length === "number") return res.length;
+    return 0;
+  };
+
   // ✅ Fetch statistics from backend
   useEffect(() => {
     const fetchStats = async () => {
@@ -23,19 +37,19 @@ const Dashboard = () => {
         const authToken = token || localStorage.getItem("token");
 
         const [productsRes, ordersRes, usersRes] = await Promise.all([
-          axios.get("http://localhost:8080/api/products"),
-          axios.get("http://localhost:8080/api/orders", {
+          axios.get(`${API_BASE_URL}/products`),
+          axios.get(`${API_BASE_URL}/orders`, {
             headers: { Authorization: `Bearer ${authToken}` },
           }),
-          axios.get("http://localhost:8080/api/users", {
+          axios.get(`${API_BASE_URL}/users`, {
             headers: { Authorization: `Bearer ${authToken}` },
           }),
         ]);
 
         setStats({
-          products: productsRes.data?.data?.length || 0,
-          orders: ordersRes.data?.data?.length || 0,
-          users: usersRes.data?.data?.length || 0,
+          products: extractCount(productsRes),
+          orders: extractCount(ordersRes),
+          users: extractCount(usersRes),
         });
       } catch (error) {
         console.error("❌ Error fetching dashboard stats:", error.response?.data || error);
@@ -108,4 +122,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
 

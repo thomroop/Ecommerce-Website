@@ -8,6 +8,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
+// Example .env: VITE_API_BASE_URL="https://your-backend.onrender.com/api"
+
 const ManageOrders = () => {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
@@ -21,15 +24,24 @@ const ManageOrders = () => {
 
   useEffect(() => {
     fetchOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/orders", {
+      const res = await axios.get(`${API_BASE_URL}/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setOrders(res.data.data);
-      setFilteredOrders(res.data.data);
+
+      // Support multiple response shapes: res.data.data OR res.data (array)
+      const data = res.data?.data ?? res.data ?? [];
+      // Normalize status to lowercase for consistent comparisons
+      const normalized = Array.isArray(data)
+        ? data.map((o) => ({ ...o, status: (o.status || "").toString().toLowerCase() }))
+        : [];
+
+      setOrders(normalized);
+      setFilteredOrders(normalized);
 
       if (!toastShown.current) {
         toast.success("Orders loaded successfully ✅");
@@ -50,7 +62,7 @@ const ManageOrders = () => {
   };
 
   const handleFilter = (e) => {
-    const value = e.target.value;
+    const value = e.target.value; // already lowercase for 'pending','shipped','delivered' or 'all'
     setStatusFilter(value);
     filterOrders(searchTerm, value);
   };
@@ -60,13 +72,16 @@ const ManageOrders = () => {
 
     if (term) {
       filtered = filtered.filter((order) =>
-        order.customer?.name?.toLowerCase().includes(term)
+        (order.customer?.name ?? "")
+          .toString()
+          .toLowerCase()
+          .includes(term)
       );
     }
 
     if (status !== "all") {
       filtered = filtered.filter(
-        (order) => order.status.toLowerCase() === status
+        (order) => (order.status ?? "").toString().toLowerCase() === status
       );
     }
 
@@ -75,25 +90,30 @@ const ManageOrders = () => {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
+      // ensure we send the status in the backend-expected form; here we send lowercase
+      const statusToSend = newStatus.toString().toLowerCase();
+
       await axios.put(
-        `http://localhost:8080/api/orders/${id}`,
-        { status: newStatus },
+        `${API_BASE_URL}/orders/${id}`,
+        { status: statusToSend },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setOrders(
-        orders.map((order) =>
-          order._id === id ? { ...order, status: newStatus } : order
-        )
+      const updated = orders.map((order) =>
+        order._id === id ? { ...order, status: statusToSend } : order
       );
+      setOrders(updated);
       filterOrders(searchTerm, statusFilter);
 
-      toast.success(`Order status updated to ${newStatus} ✅`);
+      toast.success(`Order status updated to ${capitalize(statusToSend)} ✅`);
     } catch (error) {
       console.error("Error updating status:", error);
       toast.error("Failed to update order status ❌");
     }
   };
+
+  const capitalize = (s) =>
+    s && s.length ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 
   return (
     <div className="p-4">
@@ -141,9 +161,7 @@ const ManageOrders = () => {
         {loading ? (
           <p className="text-center text-slate-500">Loading orders...</p>
         ) : filteredOrders.length === 0 ? (
-          <p className="text-center text-slate-500">
-            No matching orders found.
-          </p>
+          <p className="text-center text-slate-500">No matching orders found.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full border rounded-lg">
@@ -166,11 +184,9 @@ const ManageOrders = () => {
                     <td className="px-4 py-2 text-slate-700">
                       {order.customer?.name || "Unknown"}
                     </td>
-                    <td className="px-4 py-2 text-slate-700">
-                      ₹{order.totalPrice}
-                    </td>
+                    <td className="px-4 py-2 text-slate-700">₹{order.totalPrice}</td>
                     <td className="px-4 py-2 capitalize text-slate-700">
-                      {order.status}
+                      {capitalize(order.status)}
                     </td>
                     <td className="px-4 py-2 flex gap-2">
                       <select
@@ -180,9 +196,10 @@ const ManageOrders = () => {
                         }
                         className="border border-gray-300 px-2 py-1 rounded text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
                       >
-                        <option value="Pending">Pending</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
+                        {/* option values are lowercase to match normalization */}
+                        <option value="pending">Pending</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
                       </select>
 
                       <button
@@ -204,34 +221,38 @@ const ManageOrders = () => {
       {selectedOrder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white w-11/12 md:w-1/2 p-6 rounded-xl shadow-lg relative border border-gray-200">
-            <h3 className="text-xl font-bold mb-4 text-slate-800">
-              Order Details
-            </h3>
+            <h3 className="text-xl font-bold mb-4 text-slate-800">Order Details</h3>
 
             <p className="text-sm text-slate-600 mb-2">
-              <strong>Customer:</strong> {selectedOrder.customer?.name} (
-              {selectedOrder.customer?.email})
+              <strong>Customer:</strong> {selectedOrder.customer?.name || "N/A"} (
+              {selectedOrder.customer?.email || "N/A"})
             </p>
             <p className="text-sm text-slate-600 mb-2">
-              <strong>Total:</strong> ₹{selectedOrder.totalPrice}
+              <strong>Total:</strong> ₹{selectedOrder.totalPrice ?? "0"}
             </p>
             <p className="text-sm text-slate-600 mb-2 capitalize">
-              <strong>Status:</strong> {selectedOrder.status}
+              <strong>Status:</strong> {capitalize(selectedOrder.status)}
             </p>
             <p className="text-sm text-slate-600 mb-4">
               <strong>Date:</strong>{" "}
-              {new Date(selectedOrder.createdAt).toLocaleString()}
+              {selectedOrder.createdAt
+                ? new Date(selectedOrder.createdAt).toLocaleString()
+                : "N/A"}
             </p>
 
             <div className="border-t pt-3">
               <h4 className="font-semibold mb-2 text-slate-700">Items:</h4>
               <ul className="list-disc pl-5 text-slate-700 text-sm">
-                {selectedOrder.orderItems?.map((item) => (
-                  <li key={item._id}>
-                    Product ID: {item.product} × {item.quantity} — ₹
-                    {item.price * item.quantity}
-                  </li>
-                ))}
+                {(selectedOrder.orderItems ?? []).length === 0 ? (
+                  <li>No items found</li>
+                ) : (
+                  (selectedOrder.orderItems ?? []).map((item) => (
+                    <li key={item._id ?? `${item.product}-${item.quantity}`}>
+                      Product ID: {item.product} × {item.quantity} — ₹
+                      {item.price * item.quantity}
+                    </li>
+                  ))
+                )}
               </ul>
             </div>
 

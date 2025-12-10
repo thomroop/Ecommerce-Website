@@ -8,6 +8,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
+// .env example: VITE_API_BASE_URL="https://your-backend.onrender.com/api"
+
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -20,15 +23,19 @@ const ManageUsers = () => {
 
   useEffect(() => {
     fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/users", {
+      const res = await axios.get(`${API_BASE_URL}/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUsers(res.data.data);
-      setFilteredUsers(res.data.data);
+
+      // support res.data.data OR res.data (array)
+      const data = res.data?.data ?? res.data ?? [];
+      setUsers(Array.isArray(data) ? data : []);
+      setFilteredUsers(Array.isArray(data) ? data : []);
 
       if (!toastShown.current) {
         toast.success("Users loaded successfully ✅");
@@ -43,31 +50,50 @@ const ManageUsers = () => {
   };
 
   const handleSearch = (e) => {
-    const term = e.target.value.toLowerCase();
+    const term = (e.target.value ?? "").toString().toLowerCase();
     setSearchTerm(term);
-    const filtered = users.filter(
-      (u) =>
-        u.name.toLowerCase().includes(term) ||
-        u.email.toLowerCase().includes(term)
-    );
+
+    const filtered = users.filter((u) => {
+      const name = (u?.name ?? "").toString().toLowerCase();
+      const email = (u?.email ?? "").toString().toLowerCase();
+      return name.includes(term) || email.includes(term);
+    });
+
     setFilteredUsers(filtered);
   };
 
   const handleDelete = async (id) => {
+    const userToDelete = users.find((u) => u._id === id);
+    if (!userToDelete) {
+      toast.error("User not found ❌");
+      return;
+    }
+
+    // Role-based protection: prevent deleting admin users from UI
+    if ((userToDelete.role ?? "").toString().toLowerCase() === "admin") {
+      toast.error("Cannot delete admin user ❌");
+      return;
+    }
+
     if (!window.confirm("Are you sure you want to delete this user?")) return;
+
     try {
-      await axios.delete(`http://localhost:8080/api/users/${id}`, {
+      await axios.delete(`${API_BASE_URL}/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const updatedUsers = users.filter((u) => u._id !== id);
       setUsers(updatedUsers);
-      setFilteredUsers(updatedUsers);
+      // keep current search filtering applied
+      setFilteredUsers((prev) => prev.filter((u) => u._id !== id));
       toast.success("User deleted successfully 🗑️");
     } catch (error) {
       console.error("Error deleting user:", error);
       toast.error("Failed to delete user ❌");
     }
   };
+
+  const capitalize = (s) =>
+    s && s.length ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 
   return (
     <div className="p-4">
@@ -117,10 +143,14 @@ const ManageUsers = () => {
                     key={user._id}
                     className="border-b hover:bg-teal-50 transition-colors"
                   >
-                    <td className="px-4 py-2 text-slate-700">{user.name}</td>
-                    <td className="px-4 py-2 text-slate-700">{user.email}</td>
+                    <td className="px-4 py-2 text-slate-700">
+                      {user.name ?? "N/A"}
+                    </td>
+                    <td className="px-4 py-2 text-slate-700">
+                      {user.email ?? "N/A"}
+                    </td>
                     <td className="px-4 py-2 capitalize text-slate-700">
-                      {user.role}
+                      {capitalize((user.role ?? "user").toString())}
                     </td>
                     <td className="px-4 py-2 flex gap-2">
                       <button
@@ -153,25 +183,25 @@ const ManageUsers = () => {
             </h3>
 
             <p className="text-sm text-slate-600 mb-2">
-              <strong>Name:</strong> {selectedUser.name}
+              <strong>Name:</strong> {selectedUser.name ?? "N/A"}
             </p>
             <p className="text-sm text-slate-600 mb-2">
-              <strong>Email:</strong> {selectedUser.email}
+              <strong>Email:</strong> {selectedUser.email ?? "N/A"}
             </p>
             <p className="text-sm text-slate-600 mb-2">
-              <strong>Phone:</strong> {selectedUser.phone || "N/A"}
+              <strong>Phone:</strong> {selectedUser.phone ?? "N/A"}
             </p>
             <p className="text-sm text-slate-600 mb-2">
               <strong>Address:</strong>{" "}
-              {selectedUser.address?.length
-                ? selectedUser.address.join(", ")
+              {(selectedUser.address ?? []).length
+                ? (selectedUser.address ?? []).join(", ")
                 : "N/A"}
             </p>
             <p className="text-sm text-slate-600 mb-2 capitalize">
-              <strong>Role:</strong> {selectedUser.role}
+              <strong>Role:</strong> {capitalize(selectedUser.role ?? "user")}
             </p>
             <p className="text-sm text-slate-600 mb-2 capitalize">
-              <strong>Status:</strong> {selectedUser.status || "Active"}
+              <strong>Status:</strong> {capitalize(selectedUser.status ?? "active")}
             </p>
             <p className="text-sm text-slate-600 mb-4">
               <strong>Joined:</strong>{" "}

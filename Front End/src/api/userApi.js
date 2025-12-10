@@ -4,7 +4,7 @@
 
 import axios from "axios";
 
-const API = axios.create({ baseURL: "https://ecommerce-website-1-h99k.onrender.com/api" });
+const API = axios.create({ baseURL: import.meta.env.VITE_API_BASE_URL });
 
 // Get user profile (requires JWT token)
 export const getUserProfile = (token) =>

@@ -5,6 +5,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
+// Example: VITE_API_BASE_URL="https://ecommerce-website-1-h99k.onrender.com/api"
+
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,7 +16,7 @@ const AdminProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/products");
+        const res = await axios.get(`${API_BASE_URL}/products`);
         setProducts(res.data);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -25,18 +28,17 @@ const AdminProducts = () => {
     fetchProducts();
   }, []);
 
-  if (loading)
+  if (loading) {
     return (
       <p className="text-center text-slate-600 font-medium">
         Loading products...
       </p>
     );
+  }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4 text-teal-700">
-        Product Management
-      </h1>
+      <h1 className="text-2xl font-bold mb-4 text-teal-700">Product Management</h1>
 
       <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden border border-gray-100">
         <thead className="bg-gradient-to-r from-teal-600 to-slate-600 text-white">
@@ -47,6 +49,7 @@ const AdminProducts = () => {
             <th className="p-3 text-left">Actions</th>
           </tr>
         </thead>
+
         <tbody>
           {products.length > 0 ? (
             products.map((p) => (
@@ -56,13 +59,13 @@ const AdminProducts = () => {
               >
                 <td className="p-3 text-slate-800 font-medium">{p.name}</td>
                 <td className="p-3 text-slate-700">{p.category}</td>
-                <td className="p-3 text-slate-800 font-semibold">
-                  ₹{p.price}
-                </td>
+                <td className="p-3 text-slate-800 font-semibold">₹{p.price}</td>
+
                 <td className="p-3">
                   <button className="bg-gradient-to-r from-teal-600 to-slate-600 text-white px-3 py-1 rounded-lg shadow hover:from-teal-700 hover:to-slate-700 transition-all mr-2">
                     Edit
                   </button>
+
                   <button className="bg-red-500 text-white px-3 py-1 rounded-lg shadow hover:bg-red-600 transition-all">
                     Delete
                   </button>
